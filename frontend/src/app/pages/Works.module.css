@@ -1,0 +1,284 @@
+.section {
+  background: rgba(5,3,15,0.85);
+  padding: 80px 0 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+.header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Stream wrapper */
+.streamWrap {
+  position: relative;
+  width: 100vw;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.cardStream {
+  position: absolute;
+  width: 100vw;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.cardLine {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  white-space: nowrap;
+  cursor: grab;
+  user-select: none;
+  will-change: transform;
+}
+
+.cardLine:active,
+.dragging {
+  cursor: grabbing;
+}
+
+/* Card wrapper */
+.cardWrapper {
+  position: relative;
+  width: 360px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+/* Normal card — revealed portion grows/shrinks as it crosses a beam */
+.cardNormal {
+  position: absolute;
+  top: 0; left: 0;
+  width: 360px;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 2;
+  clip-path: inset(0 0 0 var(--clip-right, 100%));
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg2);
+}
+
+/* Mirrored: same visible width, anchored to the opposite side — used
+   while the RIGHT beam governs a card, so project stays on the side
+   closer to the window instead of always anchoring right. */
+.cardNormal.mirrored {
+  clip-path: inset(0 var(--clip-right, 100%) 0 0);
+}
+
+/* Banner — image only, confined to the top of the card so it never
+   has to fight with text for contrast (the "card holder" wrapper
+   below is a fully separate, opaque zone). */
+.cardBanner {
+  position: relative;
+  flex: 0 0 118px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0.92) saturate(0.95);
+  transition: filter 0.3s, transform 0.4s;
+}
+
+.cardNormal:hover .cardImage {
+  filter: brightness(1.05) saturate(1.1);
+  transform: scale(1.05);
+}
+
+/* Body — the opaque "card holder" that carries all text/info */
+.cardBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px 12px;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.cardTitle {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green3);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardDesc {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.cardTag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--green2);
+  background: rgba(47,148,216,0.12);
+  border: 1px solid rgba(47,148,216,0.25);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cardStatus {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.statusDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.active {
+  background: var(--green2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.planned { background: var(--green1); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ASCII card — visible portion shrinks as it crosses a beam */
+.cardAscii {
+  position: absolute;
+  top: 0; left: 0;
+  width: 360px;
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1;
+  clip-path: inset(0 calc(100% - var(--clip-left, 100%)) 0 0);
+  background: #05030f;
+  border: 1px solid var(--border);
+}
+
+/* Mirrored: same visible width, right-anchored — code grows in from
+   the card's right side while the RIGHT beam governs its reveal. */
+.cardAscii.mirrored {
+  clip-path: inset(0 0 0 calc(100% - var(--clip-left, 100%)));
+}
+
+.asciiContent {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  color: rgba(255,255,255,0.45);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 13px;
+  overflow: hidden;
+  white-space: pre;
+  animation: glitch 0.1s infinite linear alternate-reverse;
+  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
+  mask-image: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 100%);
+}
+
+@keyframes glitch {
+  0% { opacity: 1; }
+  15% { opacity: 0.9; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+/* Canvases */
+.particleCanvas {
+  position: absolute;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+  width: 100vw;
+  height: 280px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.scannerCanvas {
+  position: absolute;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+  width: 100vw;
+  height: 300px;
+  z-index: 15;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .scannerCanvas { display: none; }
+}
+
+/* Footer row */
+.footer {
+  max-width: 1100px;
+  margin: 2rem auto 0;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.seeMore {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--green2);
+  text-decoration: none;
+  border: 1px solid var(--green1);
+  padding: 8px 20px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.seeMore:hover {
+  border-color: var(--green2);
+  color: var(--green3);
+  box-shadow: 0 0 12px rgba(47,148,216,0.15);
+}

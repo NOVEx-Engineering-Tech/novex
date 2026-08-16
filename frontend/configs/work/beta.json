@@ -1,0 +1,24 @@
+{
+  "id": "beta",
+  "title": "Project Beta",
+  "type": "Software",
+  "language": [
+    "TypeScript",
+    "Python"
+  ],
+  "description": "Internal tooling suite for developer workflow automation and project management.",
+  "role": "Product design & engineering",
+  "industry": "Developer Tools",
+  "tags": [
+    "TypeScript",
+    "Python",
+    "MongoDB"
+  ],
+  "status": "planned",
+  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b5f6a5e232e7beb4be_2.png",
+  "github": "https://github.com/NOVEx-Engineering-Tech",
+  "link": null,
+  "year": 2026,
+  "client": "Internal",
+  "featured": false
+}

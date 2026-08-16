@@ -1,0 +1,24 @@
+{
+  "id": "delta",
+  "title": "Project Delta",
+  "type": "Software",
+  "language": [
+    "Go"
+  ],
+  "description": "Secure web system with audit trails, encryption, and compliance-first architecture.",
+  "role": "Security architecture",
+  "industry": "Compliance & Security",
+  "tags": [
+    "Go",
+    "PostgreSQL",
+    "Docker",
+    "Kubernetes"
+  ],
+  "status": "planned",
+  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b5bea2f1b07392d936_4.png",
+  "github": "https://github.com/NOVEx-Engineering-Tech",
+  "link": null,
+  "year": 2027,
+  "client": "Internal",
+  "featured": false
+}

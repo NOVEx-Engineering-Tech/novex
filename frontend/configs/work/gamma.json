@@ -1,0 +1,24 @@
+{
+  "id": "gamma",
+  "title": "Project Gamma",
+  "type": "Website",
+  "language": [
+    "JavaScript",
+    "PHP"
+  ],
+  "description": "Client-facing SaaS dashboard with real-time analytics and role-based permissions.",
+  "role": "Full-stack development",
+  "industry": "Recruitment / HR Tech",
+  "tags": [
+    "Vue.js",
+    "Laravel",
+    "MySQL"
+  ],
+  "status": "planned",
+  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b5c1e4919fd69672b8_3.png",
+  "github": null,
+  "link": null,
+  "year": 2026,
+  "client": "Stovo Jobs",
+  "featured": false
+}

@@ -1,63 +1,74 @@
-Project Tree:
+Project Tree (NOVEx Portfolio — Pavillion Architecture, Vite variant):
 
 root/
-    - backend/
-        - (Any Tech Stack) : NOTE
-        "We intentionally did not standardize on a single backend language because the choice is highly dependent on the project's requirements. Some applications may not require a backend, while others demand high performance and may benefit from technologies such as Rust. In other cases, Node.js may be the most suitable option due to its development speed and ecosystem. The backend stack should always be chosen based on the specific goals and constraints of the project."
-        - Dockerfile
-
     - frontend/
         - public/
-            - wasm/
-                - *.wasm
+            - assets/
+                - novex-bg.webm
+                - astronaut.png
+            - favicon.svg
+        - configs/                       # project-specific content (NOT a module)
+            - contact.json
+            - founders/*.json
+            - teams/*.json
+            - work/*.json
         - src/
             - app/
-                - api/
-                    - *.ts
-                - pages/
-                    - *.tsx
+                - App.jsx                 # route table, top-level layout
+                - main.jsx                # React DOM entry point
                 - globals.css
-                - layout.tsx
-                - page.tsx
-            
+                - pages/
+                    - Home.jsx, Projects.jsx, Teams.jsx, Team.jsx, ...
+                    - *.module.css
+
             - utils/
-                - <module_name>/
-                    - types.ts
-                    - index.ts
+                - constants.js            # internal: app-specific data (not a module)
+                - <module_name>/          # e.g. StdHooks, StdSearchBus, StdGithub, StdSocialPlatforms
+                    - types.js
+                    - index.js
                     - README.md
+
             - lib/
-                - <module_name>/
-                    - types.ts
-                    - index.ts
-                    - README.md
+                - contactLoader.js        # internal: project-specific config loaders (not modules)
+                - teamLoader.js
+                - workLoader.js
+
             - components/
-                - <module_name>/
-                    - styles.css
-                    - types.ts
-                    - index.tsx
+                - Navbar.jsx              # internal: app-specific (not a module)
+                - Footer.jsx              # internal: app-specific (not a module)
+                - ContactModal.jsx        # internal: app-specific (not a module)
+                - <module_name>/          # e.g. StdSpaceLayer, StdPersonCard, StdProjectSearch, ...
+                    - style.module.css
+                    - types.js
+                    - index.jsx
                     - README.md
+
             - module/
                 - <module_name>/
                     - pavillion.module.json
-            - wasm/
-                - *.cpp
-        - eslint.config.mjs
-        - next.config.ts
-        - tsconfig.json
-        - postcss.config.mjs
-        - package-lock.json
+
+            - assets/
+                - hero-blob.svg
+
+        - eslint.config.js
+        - vite.config.js
+        - jsconfig.json
         - package.json
+        - package-lock.json
+        - index.html
         - .gitignore
-        - Dockerfile
-    
+
     - docs/
         - dev/
-            - commands/
-                - docker.md
             - references/
                 - project_tree.md
-    
+                - modulelization.md
+
     - .gitignore
-    - docker-compose.yaml
-    - LICENSE
     - README.md
+
+Note: this project has no backend — it is a fully static portfolio site (Vite + React,
+client-side routed with react-router-dom). Build tooling stays on Vite rather than the
+template's Next.js frontend, since this project has no server-rendering requirement; the
+Pavillion `app / lib / utils / components / module` folder architecture and module
+conventions from modulelization.md are followed as-is on top of Vite.

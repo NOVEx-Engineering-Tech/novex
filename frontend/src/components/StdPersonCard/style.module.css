@@ -1,0 +1,166 @@
+.card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.6rem 1.6rem 1.4rem;
+  padding-top: 2.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(47,148,216,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.clickable { cursor: pointer; }
+.clickable:hover {
+  border-color: var(--green2);
+  box-shadow: 0 0 30px rgba(47,148,216,0.1);
+  transform: translateY(-3px);
+}
+.clickable:focus-visible {
+  outline: 2px solid var(--green2);
+  outline-offset: 2px;
+}
+
+/* ── FOUNDER VARIANT — distinct accent border ── */
+.founderCard {
+  border: 1px solid rgba(123,44,191,0.5);
+  background: linear-gradient(160deg, rgba(123,44,191,0.08) 0%, var(--bg2) 45%);
+}
+.founderCard.clickable:hover {
+  border-color: var(--green1);
+  box-shadow: 0 0 30px rgba(123,44,191,0.18);
+}
+
+.founderBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--green1), var(--green2));
+  padding: 4px 9px;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+/* ── AVATAR — pinned to the upper corner, not centered ── */
+.avatarWrap {
+  position: absolute;
+  top: -18px;
+  left: 1.6rem;
+  width: 56px;
+  height: 56px;
+  z-index: 2;
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 1px var(--green2);
+  background: var(--bg3);
+}
+.founderCard .avatar { box-shadow: 0 0 0 1px var(--green1); }
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg3);
+  border: 2px solid var(--bg2);
+  box-shadow: 0 0 0 1px var(--green2);
+  color: var(--green3);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+}
+.founderCard .avatarFallback { box-shadow: 0 0 0 1px var(--green1); }
+
+/* ── BODY ── */
+.body { position: relative; z-index: 1; }
+
+.occupation {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green3);
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+.username {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 1.1rem;
+}
+.tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green2);
+  background: rgba(47,148,216,0.08);
+  border: 1px solid rgba(47,148,216,0.2);
+  padding: 3px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+.founderCard .tag {
+  color: var(--green1);
+  background: rgba(123,44,191,0.1);
+  border-color: rgba(123,44,191,0.25);
+}
+
+.socials {
+  display: flex;
+  gap: 6px;
+}
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(123,44,191, 0.12);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--green2);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.socialBtn:hover {
+  background: rgba(47,148,216, 0.25);
+  border-color: var(--green2);
+  color: var(--green3);
+}

@@ -1,0 +1,12 @@
+{
+  "module_name": "StdSpaceLayer",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "CMP-LAY-001",
+  "version": 1,
+  "depends_on": [],
+  "uses": [
+    "components"
+  ]
+}

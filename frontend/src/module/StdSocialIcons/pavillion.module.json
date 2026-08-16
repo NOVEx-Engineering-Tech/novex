@@ -1,0 +1,12 @@
+{
+  "module_name": "StdSocialIcons",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "CMP-FBK-001",
+  "version": 1,
+  "depends_on": [],
+  "uses": [
+    "components"
+  ]
+}

@@ -1,0 +1,101 @@
+.terminal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border);
+}
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dotRed { background: #ff5f56; }
+.dotYellow { background: #ffbd2e; }
+.dotGreen { background: #27c93f; }
+.titlebarLabel {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.body {
+  padding: 1.25rem 1.4rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  min-height: 140px;
+}
+
+.line {
+  color: var(--green3);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-left: 2px;
+  background: var(--green2);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+.channels {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.channelRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--green3);
+  opacity: 0;
+  animation: rowIn 0.35s ease forwards;
+  transition: background 0.2s, color 0.2s;
+}
+.channelRow:hover {
+  background: rgba(47, 148, 216, 0.12);
+  color: var(--white);
+}
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.prompt { color: var(--green1); }
+.channelIcon { display: inline-flex; color: var(--green2); flex-shrink: 0; }
+.channelLabel {
+  min-width: 88px;
+  text-transform: lowercase;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.channelValue { color: var(--green3); }
+.channelRow:hover .channelValue { color: var(--white); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; }
+  .channelRow { animation: none; opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .channelLabel { min-width: 72px; }
+  .channelRow { flex-wrap: wrap; }
+}

@@ -1,0 +1,4 @@
+/**
+ * @typedef {string} GithubProfileUrl
+ */
+export {}

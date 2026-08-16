@@ -1,0 +1,12 @@
+{
+  "module_name": "StdSectionHeader",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "CMP-LAY-002",
+  "version": 1,
+  "depends_on": [],
+  "uses": [
+    "components"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "module_name": "StdSocialPlatforms",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "UTL-SOC-001",
+  "version": 1,
+  "depends_on": [
+    "StdSocialIcons"
+  ],
+  "uses": [
+    "utils"
+  ]
+}

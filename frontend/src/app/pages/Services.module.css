@@ -1,0 +1,55 @@
+.services { background: rgba(5,3,15,0.85); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--bg2);
+  padding: 2rem;
+  transition: background 0.2s;
+  position: relative;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--green2);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.card:hover { background: var(--bg3); }
+.card:hover::before { opacity: 1; }
+
+.num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--green1);
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 8px;
+}
+.name {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--green3);
+  margin-bottom: 10px;
+  letter-spacing: -0.3px;
+}
+.desc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+}

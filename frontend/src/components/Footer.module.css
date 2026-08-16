@@ -1,0 +1,35 @@
+.footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.copy {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--green1);
+}
+
+.comment { color: var(--green1); margin-left: 8px; opacity: 0.6; }
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.links a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.links a:hover { color: var(--green3); }

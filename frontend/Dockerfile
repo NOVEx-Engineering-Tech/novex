@@ -27,6 +27,6 @@ COPY . .
 
 COPY --from=wasm-builder /build/public/wasm ./public/wasm
 
-EXPOSE 3001
+EXPOSE 3000
 
-CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,15 @@
+{
+  "module_name": "StdPersonCard",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "CMP-CRD-001",
+  "version": 1,
+  "depends_on": [
+    "StdGithub",
+    "StdSocialIcons"
+  ],
+  "uses": [
+    "components"
+  ]
+}

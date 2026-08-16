@@ -1,0 +1,12 @@
+{
+  "module_name": "StdSearchBus",
+  "author": [
+    "NOVEx Engineering Tech"
+  ],
+  "module_id": "UTL-EVT-001",
+  "version": 1,
+  "depends_on": [],
+  "uses": [
+    "utils"
+  ]
+}

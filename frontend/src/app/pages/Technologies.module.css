@@ -1,0 +1,46 @@
+.tech { background: rgba(13,8,33,0.85); }
+
+.groupTitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  margin-top: 2.5rem;
+}
+.groupTitle::before { content: ''; }
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s;
+  cursor: default;
+}
+.chip img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  filter: brightness(0.85) saturate(0.7);
+  transition: filter 0.2s;
+}
+.chip:hover {
+  border-color: var(--green2);
+  color: var(--green3);
+}
+.chip:hover img { filter: brightness(1) saturate(1); }

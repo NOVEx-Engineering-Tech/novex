@@ -1,0 +1,31 @@
+.contact { background: rgba(5,3,15,0.85); }
+
+.wrap {
+  max-width: 620px;
+}
+
+.responseBox {
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.responseTitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green2);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.responseBox p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.responseBox strong { color: var(--green3); font-weight: 500; }
+
+.contactUsBtn {
+  margin-top: 1.5rem;
+}

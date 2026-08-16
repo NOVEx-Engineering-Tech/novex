@@ -1,0 +1,23 @@
+{
+  "id": "kappa",
+  "title": "Project Kappa",
+  "type": "Website",
+  "language": [
+    "JavaScript"
+  ],
+  "description": "Storefront rebuild with a faster checkout flow and inventory sync.",
+  "role": "Frontend engineering",
+  "industry": "E-commerce",
+  "tags": [
+    "Shopify",
+    "React",
+    "GraphQL"
+  ],
+  "status": "planned",
+  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b55e654d1341fb06f8_4.1.png",
+  "github": null,
+  "link": null,
+  "year": 2027,
+  "client": "Confidential",
+  "featured": false
+}

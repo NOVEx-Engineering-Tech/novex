@@ -1,0 +1,5 @@
+/* Std Social Icons ships no component-specific styling — each icon is a
+   zero-prop SVG using `fill="currentColor"` / `stroke="currentColor"`,
+   so it inherits color/size from whatever wraps it. This file exists to
+   satisfy the Pavillion component file contract (ppm expects
+   README.md, types.ts, style.css, index.tsx per component module). */

@@ -1,0 +1,22 @@
+{
+  "id": "eta",
+  "title": "Pavillion CLI",
+  "type": "Software",
+  "language": [
+    "Rust"
+  ],
+  "description": "The module system and package manager every NOVEx and Terminal 71 project builds on.",
+  "role": "Systems engineering",
+  "industry": "Developer Tools",
+  "tags": [
+    "Rust",
+    "CLI"
+  ],
+  "status": "in development",
+  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b5f6a5e232e7beb4be_2.png",
+  "github": "https://github.com/Terminal71-Corporation/Pavillion_Template",
+  "link": null,
+  "year": 2026,
+  "client": "Internal",
+  "featured": true
+}

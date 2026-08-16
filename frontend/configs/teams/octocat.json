@@ -1,0 +1,12 @@
+{
+  "name": "The Octocat",
+  "githubLink": "https://github.com/octocat",
+  "occupation": "Software Engineer",
+  "role": "Frontend Developer",
+  "experts": ["React", "TypeScript", "CSS"],
+  "socials": {
+    "facebook": "",
+    "instagram": "",
+    "github": "https://github.com/octocat"
+  }
+}
