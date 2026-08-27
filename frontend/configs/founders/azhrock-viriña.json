@@ -1,15 +1,15 @@
 {
-  "name": "Mark Andrew Aquino",
-  "position": "Chief Executive Officer",
+  "name": "Azhrock Ryeo Viriña",
+  "position": "Chief Executive Officer and Chief Operating Officer",
   "bio": "Leads NOVEx's vision and strategic direction, bridging business goals with technical execution. Focused on building a company that delivers real value to clients.",
   "baseImage": "https://ggayane.github.io/css-experiments/cards/dark_rider-cover.jpg",
   "secondaryImage": "https://ggayane.github.io/css-experiments/cards/dark_rider-character.webp",
   "socials": {
-    "facebook": "https://facebook.com/aquinomark217",
+    "facebook": "",
     "instagram": "",
-    "github": "https://github.com/aquinomark217"
+    "github": ""
   },
-  "githubLink": "https://github.com/aquinomark217",
+  "githubLink": "",
   "occupation": "Business Lead",
   "experts": ["Strategy", "Product", "Client Relations"]
 }

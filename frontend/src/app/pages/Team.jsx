@@ -4,12 +4,10 @@ import SectionHeader from '../../components/StdSectionHeader'
 import { FacebookIcon, InstagramIcon, GithubIcon } from '../../components/StdSocialIcons'
 import styles from './Team.module.css'
 
-import markAquino   from '../../../configs/founders/mark-aquino.json'
+import azhrockVirina   from '../../../configs/founders/azhrock-viriña.json'
 import rafaelOli    from '../../../configs/founders/rafael-oli.json'
-import kreyFrancisco from '../../../configs/founders/krey-francisco.json'
-import dexterPaniza from '../../../configs/founders/dexter-paniza.json'
 
-const FOUNDERS = [markAquino, rafaelOli, kreyFrancisco, dexterPaniza]
+const FOUNDERS = [azhrockVirina, rafaelOli]
 const COUNT = FOUNDERS.length
 
 

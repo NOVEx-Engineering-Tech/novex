@@ -1,4 +1,16 @@
-.join { background: rgba(13,8,33,0.85); }
+.join {
+  background: rgba(13, 8, 33, 0.85);
+}
+
+.logoInline {
+  height: 1em;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(123, 44, 191, 0.25));
+  margin-left: 0.15em;
+}
 
 .lead {
   font-family: var(--font-mono);
@@ -24,15 +36,22 @@
   position: relative;
   overflow: hidden;
 }
+
 .card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--green2), transparent);
 }
 
-.icon { font-size: 28px; margin-bottom: 1.2rem; display: block; }
+.icon {
+  font-size: 28px;
+  margin-bottom: 1.2rem;
+  display: block;
+}
 
 .title {
   font-family: var(--font-mono);
@@ -62,12 +81,14 @@
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--green3);
-  background: rgba(123,44,191,0.2);
+  background: rgba(123, 44, 191, 0.2);
   border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: 2px;
 }
 
 @media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }

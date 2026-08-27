@@ -16,6 +16,14 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  height: 100%;
+}
+
+.logoImage {
+  display: block;
+  width: 120px;
+  height: auto;
+  object-fit: contain;
 }
 
 .links {

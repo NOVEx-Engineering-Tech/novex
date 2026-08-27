@@ -5,12 +5,10 @@ import SectionHeader from '../../components/StdSectionHeader'
 import PersonCard from '../../components/StdPersonCard'
 import styles from './Teams.module.css'
 
-import markAquino    from '../../../configs/founders/mark-aquino.json'
+import azhrockVirina    from '../../../configs/founders/azhrock-viriña.json'
 import rafaelOli     from '../../../configs/founders/rafael-oli.json'
-import kreyFrancisco from '../../../configs/founders/krey-francisco.json'
-import dexterPaniza  from '../../../configs/founders/dexter-paniza.json'
 
-const FOUNDERS = [markAquino, rafaelOli, kreyFrancisco, dexterPaniza]
+const FOUNDERS = [azhrockVirina, rafaelOli]
 
 export default function Teams() {
   const founderRef = useFadeUp()

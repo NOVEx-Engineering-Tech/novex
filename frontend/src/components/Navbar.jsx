@@ -67,15 +67,17 @@ export default function Navbar() {
   return (
     <>
       <nav className={styles.nav}>
-        <a href="#home" className={styles.logo} onClick={e => goToSection(e, '#home')}>
-          <svg viewBox="0 0 160 32" height="28" width="auto">
-            <text y="24" fontFamily="'JetBrains Mono', monospace" fontSize="20" fontWeight="700" letterSpacing="-0.5">
-              <tspan fill="#ffffff">NOV</tspan>
-              <tspan fill="#2f94d8">Ex</tspan>
-              <tspan fill="#7b2cbf"> &gt;_</tspan>
-            </text>
-          </svg>
-        </a>
+        <a
+  href="#home"
+  className={styles.logo}
+  onClick={e => goToSection(e, '#home')}
+>
+  <img
+    src="/assets/novex-logotype.png"
+    alt="NOVEx Engineering Tech"
+    className={styles.logoImage}
+  />
+</a>
 
         <ul className={styles.links}>
           {NAV_LINKS.map(l => (
