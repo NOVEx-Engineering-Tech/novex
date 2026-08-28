@@ -1,21 +1,21 @@
 {
   "id": "beta",
-  "title": "Project Beta",
-  "type": "Software",
+  "title": "Premium Coffee Experience",
+  "type": "Website",
   "language": [
-    "TypeScript",
-    "Python"
+    "JavaScript",
+    "CSS"
   ],
-  "description": "Internal tooling suite for developer workflow automation and project management.",
+  "description": "A full-stack coffee e-commerce platform with dual checkout flows, real-time order tracking across in-store and delivery pipelines, and a role-gated admin dashboard for managing products, users, and customer support.",
   "role": "Product design & engineering",
   "industry": "Developer Tools",
   "tags": [
-    "TypeScript",
-    "Python",
-    "MongoDB"
+    "React",
+    "Express",
+    "MySQL"
   ],
-  "status": "planned",
-  "banner": "https://cdn.prod.website-files.com/68789c86c8bc802d61932544/689f20b5f6a5e232e7beb4be_2.png",
+  "status": "completed",
+  "banner": "/assets/work/Premium-Coffee-Experience.png",
   "github": "https://github.com/NOVEx-Engineering-Tech",
   "link": null,
   "year": 2026,

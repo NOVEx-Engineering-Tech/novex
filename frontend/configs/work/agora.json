@@ -1,0 +1,27 @@
+{
+  "id": "agora",
+  "title": "AGORA",
+  "type": "Website",
+  "language": [
+    "TypeScript",
+    "JavaScript"
+  ],
+  "description": "A centralized inventory and POS system for small-to-medium retail businesses, featuring role-based access, real-time stock tracking, camera-based QR/barcode checkout, payments, and a full audit trail.",
+  "role": "Full-stack development",
+  "industry": "Retail / Point of Sale",
+  "tags": [
+    "React",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "Prisma",
+    "Socket.IO"
+  ],
+  "status": "completed",
+  "banner": "/assets/work/agora/agora-dashboard.png",
+  "github": "https://github.com/NOVEx-Engineering-Tech",
+  "link": null,
+  "year": 2026,
+  "client": "Internal",
+  "featured": true
+}
