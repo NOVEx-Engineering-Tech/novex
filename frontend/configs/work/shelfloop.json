@@ -1,0 +1,24 @@
+{
+  "id": "shelfloop",
+  "title": "ShelfLoop",
+  "type": "Website",
+  "language": [
+    "JavaScript",
+    "CSS"
+  ],
+  "description": "A full-stack coffee e-commerce platform with dual checkout flows, real-time order tracking across in-store and delivery pipelines, and a role-gated admin dashboard for managing products, users, and customer support.",
+  "role": "Product design & engineering",
+  "industry": "Developer Tools",
+  "tags": [
+    "React",
+    "Express",
+    "MySQL"
+  ],
+  "status": "completed",
+  "banner": "/assets/work/Premium-Coffee-Experience.png",
+  "github": "https://github.com/NOVEx-Engineering-Tech",
+  "link": null,
+  "year": 2026,
+  "client": "Internal",
+  "featured": false
+}
