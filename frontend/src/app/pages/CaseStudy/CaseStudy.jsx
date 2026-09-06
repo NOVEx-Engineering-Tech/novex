@@ -65,6 +65,17 @@ export default function CaseStudy() {
       <main className={styles.notFound}>
         <p>Case study not found.</p>
         <Link to="/projects">Back to Projects</Link>
+        {lightbox && (
+  <div className={styles.lightboxBackdrop} onClick={() => setLightbox(null)}>
+    <div className={styles.lightboxInner} onClick={e => e.stopPropagation()}>
+      <img src={lightbox.src} alt={lightbox.label} />
+      <div className={styles.lightboxCaption}>{lightbox.label}</div>
+      <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>
+        <span className="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </div>
+)}
       </main>
     )
   }

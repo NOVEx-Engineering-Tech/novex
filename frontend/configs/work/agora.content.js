@@ -202,9 +202,7 @@ export const agoraContent = {
     title: 'Intervue: AI Mock Coach',
     href: '/projects/intervue',
   },
-}
-
-gallery: {
+  gallery: {
   title: 'Product Screenshots',
   lead: 'A closer look at the interface across dashboard, POS, inventory, and reporting views.',
   images: [
@@ -219,3 +217,4 @@ gallery: {
     { src: '/assets/work/agora/agora-login.png', label: 'Login' },
   ],
 },
+}
