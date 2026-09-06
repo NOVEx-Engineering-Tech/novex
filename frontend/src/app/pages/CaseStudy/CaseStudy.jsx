@@ -58,24 +58,13 @@ export default function CaseStudy() {
   const { id } = useParams()
   const data = CONTENT_MAP[id]
   const [navOpen, setNavOpen] = useState(false)
-  const [lightbox, setLightbox] = useState(null)
 
   if (!data) {
     return (
       <main className={styles.notFound}>
         <p>Case study not found.</p>
         <Link to="/projects">Back to Projects</Link>
-        {lightbox && (
-  <div className={styles.lightboxBackdrop} onClick={() => setLightbox(null)}>
-    <div className={styles.lightboxInner} onClick={e => e.stopPropagation()}>
-      <img src={lightbox.src} alt={lightbox.label} />
-      <div className={styles.lightboxCaption}>{lightbox.label}</div>
-      <button className={styles.lightboxClose} onClick={() => setLightbox(null)}>
-        <span className="material-symbols-outlined">close</span>
-      </button>
-    </div>
-  </div>
-)}
+      
       </main>
     )
   }
@@ -328,26 +317,7 @@ export default function CaseStudy() {
             </div>
           </section>
 
-              {/* GALLERY */}
-{data.gallery && (
-  <section id="gallery" className={styles.section}>
-    <div className={styles.eyebrow}><span className={styles.accentText}>// GALLERY</span></div>
-    <h2 className={styles.h2}>{data.gallery.title}</h2>
-    <p className={styles.lead}>{data.gallery.lead}</p>
-    <div className={styles.galleryGrid}>
-      {data.gallery.images.map((img, i) => (
-        <button
-          key={i}
-          className={styles.galleryItem}
-          onClick={() => setLightbox(img)}
-        >
-          <img src={img.src} alt={img.label} loading="lazy" />
-          <span className={styles.galleryLabel}>{img.label}</span>
-        </button>
-      ))}
-    </div>
-  </section>
-)}
+              
 
           {/* 4. CORE MODULES */}
           <section id="core-modules" className={styles.section}>

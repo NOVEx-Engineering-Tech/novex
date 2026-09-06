@@ -202,19 +202,5 @@ export const agoraContent = {
     title: 'Intervue: AI Mock Coach',
     href: '/projects/intervue',
   },
-  gallery: {
-  title: 'Product Screenshots',
-  lead: 'A closer look at the interface across dashboard, POS, inventory, and reporting views.',
-  images: [
-    { src: '/assets/work/agora/agora-dashboard.png', label: 'Executive Dashboard' },
-    { src: '/assets/work/agora/agora-POS.png', label: 'POS & Camera Scanner' },
-    { src: '/assets/work/agora/agora-inventory.png', label: 'Inventory Catalog' },
-    { src: '/assets/work/agora/agora-payments.png', label: 'Payments & Ledger' },
-    { src: '/assets/work/agora/agora-reports.png', label: 'Reports & Analytics' },
-    { src: '/assets/work/agora/agora-admin-user-management.png', label: 'User & RBAC Control' },
-    { src: '/assets/work/agora/agora-scanner.png', label: 'Camera Barcode Scanner' },
-    { src: '/assets/work/agora/agora-stock-management.png', label: 'Stock Management' },
-    { src: '/assets/work/agora/agora-login.png', label: 'Login' },
-  ],
-},
+  
 }
