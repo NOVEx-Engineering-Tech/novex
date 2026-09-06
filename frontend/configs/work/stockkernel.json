@@ -3,16 +3,20 @@
   "title": "StockKernel",
   "type": "Website",
   "language": [
-    "JavaScript",
-    "CSS"
+    "TypeScript",
+    "JavaScript"
   ],
-  "description": "A full-stack coffee e-commerce platform with dual checkout flows, real-time order tracking across in-store and delivery pipelines, and a role-gated admin dashboard for managing products, users, and customer support.",
-  "role": "Product design & engineering",
-  "industry": "Developer Tools",
+  "description": "A centralized Inventory & POS system for small-to-medium retail businesses, featuring role-based access, real-time stock tracking, camera-based QR/barcode checkout, payments, reporting, and a full audit trail.",
+  "role": "Full-stack development",
+  "industry": "Retail / Point of Sale",
   "tags": [
     "React",
+    "Next.js",
+    "Node.js",
     "Express",
-    "MySQL"
+    "PostgreSQL",
+    "Prisma",
+    "Socket.IO"
   ],
   "status": "completed",
   "banner": "/assets/work/stockkernel/stockKernel-pos.webp",

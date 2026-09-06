@@ -3,9 +3,13 @@ import { useParams, Link } from 'react-router-dom'
 import styles from './CaseStudy.module.css'
 
 import { agoraContent } from '../../../../configs/work/agora.content'
-// Register new case studies here as you build them:
+import { premiumContent } from '../../../../configs/work/premium.content'
+import { stockkernelContent } from '../../../../configs/work/stockkernel.content'
+
 const CONTENT_MAP = {
   agora: agoraContent,
+  premium: premiumContent,
+  stockkernel: stockkernelContent,
 }
 
 const TOC = [
