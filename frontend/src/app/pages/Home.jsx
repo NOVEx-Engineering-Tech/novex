@@ -15,9 +15,7 @@ export default function Home() {
       <Services />
       <Technologies />
       <Works />
-      <Team />
       <Contact />
-      <Join />
     </main>
   )
 }

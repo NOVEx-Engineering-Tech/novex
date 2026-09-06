@@ -5,7 +5,7 @@ import { useActiveSection } from '../utils/StdHooks'
 import { requestProjectSearch } from '../utils/StdSearchBus'
 import styles from './Navbar.module.css'
 
-const SECTION_IDS = ['home', 'technologies', 'projects', 'contact', 'join']
+const SECTION_IDS = ['home', 'technologies', 'projects']
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -86,8 +86,8 @@ export default function Navbar() {
             </li>
           ))}
           <li>
-            <a href="#join" className={`${styles.link} ${styles.cta}`} onClick={e => goToSection(e, '#join')}>
-              join us
+            <a href="#contact" className={`${styles.link} ${styles.cta}`} onClick={e => goToSection(e, '#contact')}>
+              contact us
             </a>
           </li>
         </ul>
@@ -105,8 +105,8 @@ export default function Navbar() {
         {NAV_LINKS.map(l => (
           <span key={l.href}>{renderLink(l, styles.mobileLink)}</span>
         ))}
-        <a href="#join" className={styles.mobileLink} onClick={e => goToSection(e, '#join')}>
-          join us
+        <a href="#contact" className={styles.mobileLink} onClick={e => goToSection(e, '#contact')}>
+          contact us
         </a>
 
         <button type="button" className={styles.mobileSearchBtn} onClick={openProjectSearch}>

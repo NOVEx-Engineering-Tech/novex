@@ -54,33 +54,7 @@ export default function Join() {
             </a>
           </div>
 
-          <div className={styles.card}>
-            <span className={styles.icon}>⚡</span>
-
-            <div className={styles.title}>Open-Source Contributors</div>
-
-            <p className={styles.desc}>
-              Love building in the open? We welcome contributors to our public repositories.
-              Good first issues are tagged and ready — dive in anytime.
-            </p>
-
-            <div className={styles.chips}>
-              {JOIN_CONTRIB.map(r => (
-                <span key={r} className={styles.chip}>
-                  {r}
-                </span>
-              ))}
-            </div>
-
-            <a
-              href={COMPANY.github}
-              className="btn-secondary"
-              target="_blank"
-              rel="noreferrer"
-            >
-              view repositories
-            </a>
-          </div>
+         
         </div>
 
       </div>

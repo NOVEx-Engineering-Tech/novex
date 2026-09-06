@@ -16,27 +16,14 @@ export default function Footer() {
             />
 
             <div className={styles.copy}>
-              © 2024 NOVEx Engineering Tech. All rights reserved.
+              © 2026 NOVEx Engineering Tech. All rights reserved.
               <span className={styles.comment}>
                 // unauthorized distribution prohibited
               </span>
             </div>
           </div>
 
-          <div className={styles.links}>
-            <a href={`mailto:${COMPANY.email}`}>email</a>
-
-            <a
-              href={COMPANY.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              github
-            </a>
-
-            
-          </div>
-
+         
         </div>
       </div>
     </footer>

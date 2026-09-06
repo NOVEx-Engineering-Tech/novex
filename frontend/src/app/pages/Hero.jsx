@@ -111,7 +111,7 @@ export default function Hero() {
 
             <div className={styles.stats}>
               {[
-                { val: '6+',  label: 'services' },
+                { val: '3',  label: 'services' },
                 { val: '2',   label: 'founders' },
                 { val: '23+', label: 'technologies' },
               ].map((s, i) => (
