@@ -1,6 +1,6 @@
 {
-  "id": "shelfloop",
-  "title": "ShelfLoop",
+  "id": "stockkernel",
+  "title": "StockKernel",
   "type": "Website",
   "language": [
     "JavaScript",
@@ -15,7 +15,7 @@
     "MySQL"
   ],
   "status": "completed",
-  "banner": "/assets/work/Premium-Coffee-Experience.png",
+  "banner": "/assets/work/stockkernel/stockKernel-pos.webp",
   "github": "https://github.com/NOVEx-Engineering-Tech",
   "link": null,
   "year": 2026,

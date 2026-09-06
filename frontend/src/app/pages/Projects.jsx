@@ -120,15 +120,10 @@ export default function Projects() {
                   </div>
 
                   {(p.github || p.link) && (
-                    <a
-                      href={p.github || p.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.link}
-                    >
-                      {p.github ? 'view repository →' : 'view live →'}
-                    </a>
-                  )}
+  <Link to={`/projects/${p.id}`} className={styles.link}>
+    view case study →
+  </Link>
+)}
                 </div>
               </article>
             ))}

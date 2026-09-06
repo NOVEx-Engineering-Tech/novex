@@ -19,12 +19,9 @@ export const NAV_LINKS = [
 ]
 
 export const SERVICES = [
-  { num: '01', name: 'Custom Web Apps',         desc: 'Full-stack web applications built from the ground up, tailored to your specific business needs and workflows.' },
-  { num: '02', name: 'Backend API Development', desc: 'Robust RESTful and GraphQL APIs with authentication, rate limiting, and production-grade architecture.' },
-  { num: '03', name: 'Modern UI/UX Interfaces', desc: 'Pixel-perfect, responsive frontends that prioritize user experience, accessibility, and performance.' },
-  { num: '04', name: 'Admin Dashboards',        desc: 'Data-rich management panels with real-time updates, analytics, and role-based access control.' },
-  { num: '05', name: 'Secure Web Systems',      desc: 'Security-first architecture with encryption, audit trails, and compliance considerations built in from day one.' },
-  { num: '06', name: 'Deployment & Maintenance',desc: 'CI/CD pipelines, containerized deployments, cloud infrastructure, and ongoing support contracts.' },
+  { num: '01', name: 'Custom Web Apps',         desc: 'Full-stack web applications built from the ground up, tailored to your specific business needs and workflows — including robust RESTful and GraphQL APIs with authentication and rate limiting, and security-first architecture with encryption, audit trails, and compliance built in from day one.' },
+  { num: '02', name: 'Modern UI/UX Interfaces', desc: 'Pixel-perfect, responsive frontends that prioritize user experience, accessibility, and performance — designed with clean component systems, thoughtful micro-interactions, and consistent design language across every screen and device size.' },
+  { num: '03', name: 'Deployment & Maintenance',desc: 'CI/CD pipelines, containerized deployments, cloud infrastructure, and ongoing support contracts — with automated testing, monitoring, and rollback strategies to keep your systems running reliably long after launch.' },
 ]
 
 export const TECH_LANGUAGES = [
