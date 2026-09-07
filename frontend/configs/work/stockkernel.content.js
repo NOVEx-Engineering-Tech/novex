@@ -20,6 +20,7 @@ export const stockkernelContent = {
     description:
       'Secure role-based access to product and inventory management, stock tracking, order processing with QR/barcode scanning, real-time stock updates, payment handling, reporting, and a complete audit trail — architected as a three-tier client-server system.',
     status: 'PRODUCTION ARCHITECTURE · COMPLETE',
+    image: '/assets/work/stockkernel/stockKernel-pos.webp',
   },
 
   metaCards: [
@@ -105,8 +106,8 @@ export const stockkernelContent = {
     lead: 'Schema spans Auth & RBAC, Inventory, Stock Movements, Sales, and a fully denormalized Audit Log — read directly from schema.prisma as the authoritative source.',
     domains: [
       { num: '01', icon: 'key', title: 'Auth & Access Control', body: 'User, Role, Permission, and join tables enforcing a strict 1:1 User↔Role mapping with many-to-many Role↔Permission grants.', facts: ['User ↔ UserRole (1:1)', 'RolePermission (many-to-many)', 'Roles: SUPER_ADMIN, ADMIN, MANAGER, CASHIER'], rule: 'Every endpoint gated by permission_name (e.g. "product:create")' },
-      { num: '02', icon: 'inventory_2', title: 'Inventory Core', body: 'Category, Supplier, and Product tables with unique SKU/barcode indexing and a 1:1 StockLevel per product.', facts: ['Product 1:1 StockLevel', 'Configurable low/high thresholds', 'Unique SKU & barcode indexing'], rule: 'Supplier deletion sets product.supplier_id to null (SetNull)' },
-      { num: '03', icon: 'swap_vert', title: 'Stock Movements', body: 'Immutable ledger of every stock change, tagged by movement type and linked to the acting user.', facts: ['Enum: STOCK_IN | STOCK_OUT | ADJUSTMENT', 'Linked to product_id and user_id', 'Optional reason field for adjustments'], rule: 'Indexed by created_at for fast movement-history queries' },
+      { num: '02', icon: 'inventory_2', title: 'Inventory Core', body: 'Category, Supplier, and Product tables with unique SKU/barcode indexing and a 1:1 StockLevel per product.', facts: ['Product 1:1 StockLevel', 'Configurable low/high thresholds', 'Unique SKU & barcode indexing'], rule: 'Supplier deletion sets product.supplier_id to null (SetNull)', image: '/assets/work/stockkernel/stockkernel-inventory.png' },
+      { num: '03', icon: 'swap_vert', title: 'Stock Movements', body: 'Immutable ledger of every stock change, tagged by movement type and linked to the acting user.', facts: ['Enum: STOCK_IN | STOCK_OUT | ADJUSTMENT', 'Linked to product_id and user_id', 'Optional reason field for adjustments'], rule: 'Indexed by created_at for fast movement-history queries', image: '/assets/work/stockkernel/stockkernel-stockmovements-admindashboard.png' },
       { num: '04', icon: 'point_of_sale', title: 'Sales & Transactions', body: 'Order and OrderItem tables capture itemized carts; Transaction holds a strict 1:1 link to each completed Order.', facts: ['Order 1:1 Transaction (Restrict on delete)', 'OrderItem stores historical unit_price', 'PaymentMethod: CASH, CARD, GCASH, MAYA'], rule: 'Transaction cannot be deleted while its Order still exists' },
       { num: '05', icon: 'history_edu', title: 'Monitoring & Denormalized Audit', body: 'AuditLog denormalizes username and user_role at write-time so historical records stay accurate even if a user account is later changed or removed.', facts: ['AuditAction: CREATE, UPDATE, DELETE, LOGIN, LOGOUT, EXPORT, VOID, ADJUST, FAILED', 'old_value / new_value stored as text', 'Minimum 12-month retention, read-only'], rule: 'Passwords are never written to audit logs', wide: true },
     ],
@@ -116,14 +117,14 @@ export const stockkernelContent = {
     title: 'Core Feature Modules',
     lead: 'Eight functional modules spanning authentication, inventory, stock, POS, payments, reporting, dashboards, and audit — each mapped to a NOVEx frontend module scope.',
     items: [
-      { icon: 'admin_panel_settings', num: '1', title: 'Auth & RBAC', body: 'JWT-based login/logout, password reset, and full role/permission management across 4 tiers.', tag: 'lib/auth · LIB-AUTH' },
-      { icon: 'inventory_2', num: '2', title: 'Product & Category Management', body: 'Add/edit/deactivate products, assign barcodes/QR, and manage categories and suppliers.', tag: 'lib/api · CMP-TBL, CMP-FRM' },
-      { icon: 'warehouse', num: '3', title: 'Stock Management', body: 'Stock-in, stock-out, manual adjustments, movement history, and low-stock alerting.', tag: 'lib/api + lib/ws real-time', featured: true },
-      { icon: 'point_of_sale', num: '4', title: 'POS / Order Management', body: 'Create orders, scan products via camera, apply discounts, and calculate totals in real time.', tag: 'lib/api · CMP-FRM, CMP-TBL' },
-      { icon: 'qr_code_scanner', num: '5', title: 'Camera / QR Scanner', body: 'jsQR-powered camera scanning with manual barcode fallback and scan-failure alerts.', tag: 'lib/scanner (jsQR wrapper)', featured: true },
-      { icon: 'payments', num: '6', title: 'Payment & Transactions', body: 'Cash payment recording with change computation, receipt generation, and daily sales summaries.', tag: 'lib/payment · LIB-PAY' },
-      { icon: 'query_stats', num: '7', title: 'Reports & Analytics', body: 'Daily/weekly/monthly sales, best-sellers, inventory movement, and CSV/PDF export.', tag: 'components/chart + lib/api' },
-      { icon: 'policy', num: '8', title: 'Audit Trail', body: '12-month read-only compliance log with filters by date, user, module, action type, and status.', tag: 'Read-only · Super Admin export' },
+      { icon: 'admin_panel_settings', num: '1', title: 'Auth & RBAC', body: 'JWT-based login/logout, password reset, and full role/permission management across 4 tiers.', tag: 'lib/auth · LIB-AUTH', image: '/assets/work/stockkernel/stockkernel-login.png' },
+      { icon: 'inventory_2', num: '2', title: 'Product & Category Management', body: 'Add/edit/deactivate products, assign barcodes/QR, and manage categories and suppliers.', tag: 'lib/api · CMP-TBL, CMP-FRM', image: '/assets/work/stockkernel/skockkernel-products-userdashboard.png' },
+      { icon: 'warehouse', num: '3', title: 'Stock Management', body: 'Stock-in, stock-out, manual adjustments, movement history, and low-stock alerting.', tag: 'lib/api + lib/ws real-time', featured: true, image: '/assets/work/stockkernel/stockkernel-stocks.png' },
+      { icon: 'point_of_sale', num: '4', title: 'POS / Order Management', body: 'Create orders, scan products via camera, apply discounts, and calculate totals in real time.', tag: 'lib/api · CMP-FRM, CMP-TBL', image: '/assets/work/stockkernel/stockKernel-pos.webp' },
+      { icon: 'qr_code_scanner', num: '5', title: 'Camera / QR Scanner', body: 'jsQR-powered camera scanning with manual barcode fallback and scan-failure alerts.', tag: 'lib/scanner (jsQR wrapper)', featured: true, image: '/assets/work/stockkernel/stockkernel-qr.png' },
+      { icon: 'payments', num: '6', title: 'Payment & Transactions', body: 'Cash payment recording with change computation, receipt generation, and daily sales summaries.', tag: 'lib/payment · LIB-PAY', image: '/assets/work/stockkernel/stockkernel-transaction-history.png' },
+      { icon: 'query_stats', num: '7', title: 'Reports & Analytics', body: 'Daily/weekly/monthly sales, best-sellers, inventory movement, and CSV/PDF export.', tag: 'components/chart + lib/api', image: '/assets/work/stockkernel/stockkernel-reports&analytics.png' },
+      { icon: 'policy', num: '8', title: 'Audit Trail', body: '12-month read-only compliance log with filters by date, user, module, action type, and status.', tag: 'Read-only · Super Admin export', image: '/assets/work/stockkernel/stockkernel-superadmin-useraccountspage.png' },
     ],
   },
 

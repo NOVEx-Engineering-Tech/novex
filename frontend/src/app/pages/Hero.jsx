@@ -105,7 +105,7 @@ export default function Hero() {
             </p>
 
             <div className={styles.actions}>
-              <a href="#projects" className="btn-primary">view projects →</a>
+              <a href="projects" className="btn-primary">view projects →</a>
               <a href="#contact" className="btn-secondary">get in touch</a>
             </div>
 

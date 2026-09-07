@@ -24,6 +24,7 @@ export const agoraContent = {
     description:
       'A Full-Stack Retail Operations Case Study engineered for small-to-medium retail businesses (sari-sari stores, groceries, pharmacies, hardware stores, and independent cafés).',
     status: 'PRODUCTION READY · 100% COMPLETE',
+    image: '/assets/work/agora/agora-dashboard.png',
   },
 
   metaCards: [
@@ -87,7 +88,7 @@ export const agoraContent = {
     title: 'Three-Tier Client-Server Topology',
     lead: 'Engineered with strict separation of concerns, high throughput, and fault-tolerant data synchronization across distributed store registers.',
     tiers: [
-      { num: '01', icon: 'devices', title: 'Client Layer', body: 'Lightweight, single-page application tuned for low-spec POS hardware and tablets with instant state transitions.', stack: ['React 18 + TypeScript', 'Vite Bundler Engine', 'Zustand (Cart & Auth)', 'TanStack Query v5', 'Socket.IO Client'], hosted: 'Vercel CDN Global Edge' },
+      { num: '01', icon: 'devices', title: 'Client Layer', body: 'Lightweight, single-page application tuned for low-spec POS hardware and tablets with instant state transitions.', stack: ['React 18 + TypeScript', 'Vite Bundler Engine', 'Zustand (Cart & Auth)', 'TanStack Query v5', 'Socket.IO Client'], hosted: 'Vercel CDN Global Edge', image: '/assets/work/agora/agora-login.png' },
       { num: '02', icon: 'memory', title: 'Application Layer', body: 'Node.js + Express + TypeScript modular domain services governing transactional boundaries and business constraints.', stack: ['Auth & RBAC Guard', 'Products & Catalog', 'Inventory & Stock Moves', 'Orders & Payments', 'Audit Trail Dispatcher'], hosted: 'Railway / Render Container' },
       { num: '03', icon: 'database', title: 'Data Layer', body: 'ACID-compliant relational persistence coupled with high-speed memory caching for transient keys and session auth.', stack: ['PostgreSQL (Supabase)', 'Prisma ORM Engine', 'Redis Session Cache', 'Refresh Token Blacklist', 'Notification Queuing'], hosted: 'Supabase Managed PG' },
       { num: '04', icon: 'hub', title: 'External Integrations', body: 'Third-party asynchronous telemetry and alert gateways notifying managers of mission-critical threshold events.', stack: ['Twilio (SMS Stock Alerts)', 'Resend (Transactional Email)', 'PDF Electronic Receipts', 'Daily Manager Summaries', 'Webhooks & Sockets'], hosted: 'TLS 1.3 / REST Webhooks' },
@@ -120,14 +121,14 @@ export const agoraContent = {
     title: 'Eight Core Operational Modules',
     lead: 'Complete feature suite powering daily retail workflows from morning register opening to night-time stock reconciliation.',
     items: [
-      { icon: 'analytics', num: '5.1', title: 'Executive Dashboard', body: "Instant KPI summary: today's revenue, orders completed, low-stock count warning, catalog size, and 7-day sales trendline.", tag: 'Live polling + WebSocket sync' },
-      { icon: 'barcode_scanner', num: '5.2', title: 'POS & Optical Scanner', body: 'F2 quick keyboard shortcut, responsive live cart calculations, real-time camera QR/barcode scanner with manual search fallback.', tag: 'Camera WASM + Sub-50ms render', featured: true },
-      { icon: 'category', num: '5.3', title: 'Inventory Catalog', body: 'Tabbed management across Products, Categories, and Suppliers with dynamic SKU generation, barcodes, cost, price, and active states.', tag: 'Zod validation on product mutations' },
-      { icon: 'inventory', num: '5.4', title: 'Stock Management', body: '4 unified views: Stock Levels, Stock In, Stock Out, and Movement History with an instant one-click "Low stock only" filter.', tag: 'Threshold auto-triggering' },
-      { icon: 'payments', num: '5.5', title: 'Payments & Ledger', body: 'Accurate amount paid input, automated change calculation, multiple payment methods (Cash, Digital QR, Card), and daily drawer balancing.', tag: '1:1 Transaction to Order binding' },
-      { icon: 'query_stats', num: '5.6', title: 'Reports & Analytics', body: 'Daily, weekly, and monthly views detailing average order value (AOV), top revenue products, and stock-in versus stock-out ratios.', tag: 'Exportable CSV & printable PDF' },
-      { icon: 'admin_panel_settings', num: '5.7', title: 'User & RBAC Control', body: 'Fine-grained operational permissions across 4 tiers: Super Admin (system wide), Admin (store setup), Manager (inventory), and Cashier (POS only).', tag: 'Password hash rotation & lockouts' },
-      { icon: 'policy', num: '5.8', title: 'Audit Trail', body: 'Read-only 12-month compliance log featuring permanent actor snapshots, origin IP geolocation, and JSON diffs of modified fields.', tag: 'Tamper-proof append-only', featured: true },
+      { icon: 'analytics', num: '5.1', title: 'Executive Dashboard', body: "Instant KPI summary: today's revenue, orders completed, low-stock count warning, catalog size, and 7-day sales trendline.", tag: 'Live polling + WebSocket sync', image: '/assets/work/agora/agora-dashboard.png' },
+      { icon: 'barcode_scanner', num: '5.2', title: 'POS & Optical Scanner', body: 'F2 quick keyboard shortcut, responsive live cart calculations, real-time camera QR/barcode scanner with manual search fallback.', tag: 'Camera WASM + Sub-50ms render', featured: true, image: '/assets/work/agora/agora-POS.png' },
+      { icon: 'category', num: '5.3', title: 'Inventory Catalog', body: 'Tabbed management across Products, Categories, and Suppliers with dynamic SKU generation, barcodes, cost, price, and active states.', tag: 'Zod validation on product mutations', image: '/assets/work/agora/agora-inventory.png' },
+      { icon: 'inventory', num: '5.4', title: 'Stock Management', body: '4 unified views: Stock Levels, Stock In, Stock Out, and Movement History with an instant one-click "Low stock only" filter.', tag: 'Threshold auto-triggering', image: '/assets/work/agora/agora-stock-management.png' },
+      { icon: 'payments', num: '5.5', title: 'Payments & Ledger', body: 'Accurate amount paid input, automated change calculation, multiple payment methods (Cash, Digital QR, Card), and daily drawer balancing.', tag: '1:1 Transaction to Order binding', image: '/assets/work/agora/agora-payments.png' },
+      { icon: 'query_stats', num: '5.6', title: 'Reports & Analytics', body: 'Daily, weekly, and monthly views detailing average order value (AOV), top revenue products, and stock-in versus stock-out ratios.', tag: 'Exportable CSV & printable PDF', image: '/assets/work/agora/agora-reports.png' },
+      { icon: 'admin_panel_settings', num: '5.7', title: 'User & RBAC Control', body: 'Fine-grained operational permissions across 4 tiers: Super Admin (system wide), Admin (store setup), Manager (inventory), and Cashier (POS only).', tag: 'Password hash rotation & lockouts', image: '/assets/work/agora/agora-admin-user-management.png' },
+      { icon: 'policy', num: '5.8', title: 'Audit Trail', body: 'Read-only 12-month compliance log featuring permanent actor snapshots, origin IP geolocation, and JSON diffs of modified fields.', tag: 'Tamper-proof append-only', featured: true, image: '/assets/work/agora/agora-scanner.png' },
     ],
   },
 
@@ -202,5 +203,4 @@ export const agoraContent = {
     title: 'Intervue: AI Mock Coach',
     href: '/projects/intervue',
   },
-  
 }

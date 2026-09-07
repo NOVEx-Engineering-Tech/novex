@@ -21,10 +21,24 @@ const TOC = [
   { id: 'security', num: '05', label: 'Security' },
   { id: 'sprints', num: '06', label: 'Sprint Roadmap' },
   { id: 'post-mortem', num: '07', label: 'Post-Mortem' },
-  { id: 'outcome', num: '08', label: 'Sign-off' },
+  { id: 'outcome', num: '08', label: 'Sign-off', isExit: true },
 ]
 
-function ModuleCard({ item }) {
+function Screenshot({ src, alt, onOpen }) {
+  if (!src) return null
+  return (
+    <button type="button" className={styles.screenshotFrame} onClick={() => onOpen?.(src, alt)}>
+      <div className={styles.screenshotChrome}>
+        <span className={styles.screenshotDot} />
+        <span className={styles.screenshotDot} />
+        <span className={styles.screenshotDot} />
+      </div>
+      <img src={src} alt={alt} loading="lazy" className={styles.screenshotImg} />
+    </button>
+  )
+}
+
+function ModuleCard({ item, onOpenImage }) {
   return (
     <div className={`${styles.moduleCard} ${item.featured ? styles.moduleCardFeatured : ''}`}>
       <div className={styles.moduleIcon}>
@@ -33,6 +47,9 @@ function ModuleCard({ item }) {
       <div className={styles.moduleNum}>MODULE {item.num}</div>
       <h3 className={styles.moduleTitle}>{item.title}</h3>
       <p className={styles.moduleBody}>{item.body}</p>
+      {item.image && (
+        <Screenshot src={item.image} alt={item.title} onOpen={onOpenImage} />
+      )}
       <div className={styles.moduleTag}>{item.tag}</div>
     </div>
   )
@@ -62,6 +79,8 @@ export default function CaseStudy() {
   const { id } = useParams()
   const data = CONTENT_MAP[id]
   const [navOpen, setNavOpen] = useState(false)
+  const [lightbox, setLightbox] = useState(null)
+  const openImage = (src, alt) => setLightbox({ src, alt })
 
   if (!data) {
     return (
@@ -101,13 +120,20 @@ export default function CaseStudy() {
               <span className={styles.sidebarPill}>DOC_MAP</span>
             </div>
             <nav className={styles.sidebarNav}>
-              {TOC.map(t => (
-                <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink}>
-                  <span className={styles.sidebarNum}>{t.num}</span>
-                  <span>{t.label}</span>
-                </a>
-              ))}
-            </nav>
+  {TOC.map(t => (
+    t.isExit ? (
+      <Link key={t.id} to="/projects" className={styles.sidebarLink}>
+        <span className={styles.sidebarNum}>{t.num}</span>
+        <span>{t.label}</span>
+      </Link>
+    ) : (
+      <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink}>
+        <span className={styles.sidebarNum}>{t.num}</span>
+        <span>{t.label}</span>
+      </a>
+    )
+  ))}
+</nav>
           </div>
         </aside>
 
@@ -129,13 +155,20 @@ export default function CaseStudy() {
                 </button>
               </div>
               <nav className={styles.sidebarNav}>
-                {TOC.map(t => (
-                  <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
-                    <span className={styles.sidebarNum}>{t.num}</span>
-                    <span>{t.label}</span>
-                  </a>
-                ))}
-              </nav>
+  {TOC.map(t => (
+    t.isExit ? (
+      <Link key={t.id} to="/projects" className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
+        <span className={styles.sidebarNum}>{t.num}</span>
+        <span>{t.label}</span>
+      </Link>
+    ) : (
+      <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
+        <span className={styles.sidebarNum}>{t.num}</span>
+        <span>{t.label}</span>
+      </a>
+    )
+  ))}
+</nav>
             </aside>
           </div>
         )}
@@ -164,6 +197,12 @@ export default function CaseStudy() {
               <p className={styles.heroLead}>{data.hero.lead}</p>
               <p className={styles.heroDesc}>{data.hero.description}</p>
             </div>
+
+            {data.hero.image && (
+              <div className={styles.heroShotWrap}>
+                <Screenshot src={data.hero.image} alt={`${data.hero.name} product screenshot`} onOpen={openImage} />
+              </div>
+            )}
 
             <div className={styles.taglineBanner}>
               <div className={styles.taglineLeft}>
@@ -199,18 +238,7 @@ export default function CaseStudy() {
               ))}
             </div>
 
-            <div className={styles.ctaRow}>
-              {data.ctas.map((c, i) => (
-                <a
-                  key={i}
-                  href={c.href}
-                  className={c.primary ? styles.ctaPrimary : styles.ctaSecondary}
-                >
-                  <span>{c.label}</span>
-                  <span className="material-symbols-outlined">{c.icon}</span>
-                </a>
-              ))}
-            </div>
+            
           </section>
 
           {/* 1. PROBLEM & GOALS */}
@@ -265,6 +293,9 @@ export default function CaseStudy() {
                   <div className={styles.tierStack}>
                     {t.stack.map((s, j) => <div key={j}>● {s}</div>)}
                   </div>
+                  {t.image && (
+                    <Screenshot src={t.image} alt={t.title} onOpen={openImage} />
+                  )}
                   <div className={styles.tierHosted}>Hosted: {t.hosted}</div>
                 </div>
               ))}
@@ -315,13 +346,14 @@ export default function CaseStudy() {
                   <div className={styles.tierStack}>
                     {d.facts.map((f, j) => <div key={j}>● {f}</div>)}
                   </div>
+                  {d.image && (
+                    <Screenshot src={d.image} alt={d.title} onOpen={openImage} />
+                  )}
                   <div className={styles.tierHosted}>Rule: {d.rule}</div>
                 </div>
               ))}
             </div>
           </section>
-
-              
 
           {/* 4. CORE MODULES */}
           <section id="core-modules" className={styles.section}>
@@ -329,7 +361,7 @@ export default function CaseStudy() {
             <h2 className={styles.h2}>{data.modules.title}</h2>
             <p className={styles.lead}>{data.modules.lead}</p>
             <div className={styles.moduleGrid}>
-              {data.modules.items.map((m, i) => <ModuleCard key={i} item={m} />)}
+              {data.modules.items.map((m, i) => <ModuleCard key={i} item={m} onOpenImage={openImage} />)}
             </div>
           </section>
 
@@ -402,15 +434,22 @@ export default function CaseStudy() {
               </div>
             </div>
 
-            <div className={styles.backBar}>
-  <Link to="/projects" className={styles.backBtn}>
-    <span className="material-symbols-outlined">arrow_back</span>
-    back to projects
-  </Link>
-</div>
+            
           </section>
         </div>
       </div>
+
+      {lightbox && (
+        <div className={styles.lightboxBackdrop} onClick={() => setLightbox(null)}>
+          <div className={styles.lightboxInner} onClick={e => e.stopPropagation()}>
+            <img src={lightbox.src} alt={lightbox.alt} />
+            <div className={styles.lightboxCaption}>{lightbox.alt}</div>
+            <button className={styles.lightboxClose} onClick={() => setLightbox(null)} aria-label="Close">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
