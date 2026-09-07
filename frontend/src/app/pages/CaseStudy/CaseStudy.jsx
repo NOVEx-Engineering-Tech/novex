@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useLayoutEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import styles from './CaseStudy.module.css'
 
@@ -77,6 +77,13 @@ function Incident({ item }) {
 
 export default function CaseStudy() {
   const { id } = useParams()
+  useLayoutEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'instant',
+  })
+}, [id])
   const data = CONTENT_MAP[id]
   const [navOpen, setNavOpen] = useState(false)
   const [lightbox, setLightbox] = useState(null)
