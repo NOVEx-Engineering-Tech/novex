@@ -3,6 +3,7 @@ import { useTypewriter, useParticleCanvas, useCountUp } from '../../utils/StdHoo
 import { TYPEWRITER_PHRASES } from '../../utils/constants'
 import heroBlobRaw from '../../assets/hero-blob.svg?raw'
 import styles from './Hero.module.css'
+import { Link } from 'react-router-dom'
 
 // Splits a stat value like "23+" into { number: 23, suffix: '+' }
 // and animates the number from 0 up on mount, keeping any suffix static.
@@ -105,7 +106,9 @@ export default function Hero() {
             </p>
 
             <div className={styles.actions}>
-              <a href="projects" className="btn-primary">view projects →</a>
+              <Link to="/projects" className={styles.someClass}>
+              view projects →
+              </Link>
               <a href="#contact" className="btn-secondary">get in touch</a>
             </div>
 
