@@ -106,8 +106,8 @@ export default function Hero() {
             </p>
 
             <div className={styles.actions}>
-              <Link to="/projects" className={styles.someClass}>
-              view projects →
+              <Link to="/projects" className="btn-primary">
+                view projects →
               </Link>
               <a href="#contact" className="btn-secondary">get in touch</a>
             </div>
