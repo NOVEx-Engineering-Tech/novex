@@ -359,3 +359,32 @@
   .bottomNav { flex-direction: row; align-items: center; justify-content: space-between; }
   .heroShotWrap { max-width: 100%; }
 }
+
+.exitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: 1px solid #dc2626;
+  border-radius: 8px;
+  background: #b91c1c;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.exitButton:hover {
+  background: #991b1b;
+  color: #fff;
+  text-decoration: none;
+}
+
+.exitButton:focus-visible {
+  outline: 2px solid #fca5a5;
+  outline-offset: 3px;
+}

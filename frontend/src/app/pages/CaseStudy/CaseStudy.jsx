@@ -21,7 +21,7 @@ const TOC = [
   { id: 'security', num: '05', label: 'Security' },
   { id: 'sprints', num: '06', label: 'Sprint Roadmap' },
   { id: 'post-mortem', num: '07', label: 'Post-Mortem' },
-  { id: 'outcome', num: '08', label: 'Sign-off', isExit: true },
+  { id: 'outcome', num: '08', label: 'exit', isExit: true },
 ]
 
 function Screenshot({ src, alt, onOpen }) {
@@ -129,10 +129,14 @@ export default function CaseStudy() {
             <nav className={styles.sidebarNav}>
   {TOC.map(t => (
     t.isExit ? (
-      <Link key={t.id} to="/projects" className={styles.sidebarLink}>
-        <span className={styles.sidebarNum}>{t.num}</span>
-        <span>{t.label}</span>
-      </Link>
+      <Link
+  key={t.id}
+  to="/projects"
+  className={styles.exitButton}
+  onClick={() => setNavOpen(false)}
+>
+  {t.label}
+</Link>
     ) : (
       <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink}>
         <span className={styles.sidebarNum}>{t.num}</span>
@@ -164,10 +168,14 @@ export default function CaseStudy() {
               <nav className={styles.sidebarNav}>
   {TOC.map(t => (
     t.isExit ? (
-      <Link key={t.id} to="/projects" className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
-        <span className={styles.sidebarNum}>{t.num}</span>
-        <span>{t.label}</span>
-      </Link>
+      <Link
+  key={t.id}
+  to="/projects"
+  className={styles.exitButton}
+  onClick={() => setNavOpen(false)}
+>
+  {t.label}
+</Link>
     ) : (
       <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
         <span className={styles.sidebarNum}>{t.num}</span>
