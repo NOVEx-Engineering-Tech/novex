@@ -167,8 +167,14 @@ export default function Works() {
     stateRef.current = s
 
     // Set initial position off-screen left so it enters from left
-    s.position = -cardLineWidth
-    cardLine.style.transform = `translateX(${s.position}px)`
+    // Start with a project already visible in the middle.
+  const cycleWidth = items.length * (CARD_W + CARD_GAP)
+  const initialPosition =
+    (container.offsetWidth - CARD_W) / 2 -
+    Math.floor(REPEAT / 2) * cycleWidth
+
+  s.position = initialPosition
+  cardLine.style.transform = `translateX(${s.position}px)`
 
     // ── Drag ──
     function startDrag(clientX) {
@@ -230,10 +236,15 @@ export default function Works() {
         s.position += s.velocity * s.direction * dt
 
         // Wrap
-        const cw = container.offsetWidth
-        if (s.direction > 0 && s.position > cw) s.position = -s.cardLineWidth
-        else if (s.direction < 0 && s.position < -s.cardLineWidth) s.position = cw
+       // Loop between identical copies without an empty-screen delay.
+if (cycleWidth > 0) {
+  const lowerBound = initialPosition - cycleWidth / 2
 
+  s.position =
+    lowerBound +
+    (((s.position - lowerBound) % cycleWidth) + cycleWidth) %
+      cycleWidth
+}
         cardLine.style.transform = `translateX(${s.position}px)`
       }
 

@@ -245,3 +245,15 @@
   transition: color 0.2s;
 }
 .link:hover { color: var(--green3); }
+a.card,
+a.card:hover,
+a.card:focus,
+a.card:active,
+a.card:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card .link {
+  text-decoration: none;
+}

@@ -57,7 +57,7 @@ export default function Projects() {
   return (
     <section className={styles.projects}>
       <div className="container">
-        <Link to="/" className={styles.back}>← back home</Link>
+       
 
         <div className={styles.headerRow}>
           <SectionHeader
@@ -82,7 +82,12 @@ export default function Projects() {
         ) : (
           <div className={`${styles.grid} fade-up`} ref={ref}>
             {results.map(p => (
-              <article key={p.id} className={styles.card}>
+              <Link
+  key={p.id}
+  to={`/projects/${p.id}`}
+  className={styles.card}
+  aria-label={`View ${p.title} case study`}
+>
                 <div className={styles.banner}>
                   <img
                     src={p.banner}
@@ -120,12 +125,12 @@ export default function Projects() {
                   </div>
 
                   {(p.github || p.link) && (
-  <Link to={`/projects/${p.id}`} className={styles.link}>
-    view case study →
-  </Link>
+  <span className={styles.link}>
+  view case study →
+</span>
 )}
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}
