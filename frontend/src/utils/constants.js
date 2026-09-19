@@ -18,9 +18,21 @@ export const NAV_LINKS = [
 ]
 
 export const SERVICES = [
-  { num: '01', name: 'Custom Web Apps',         desc: 'Full-stack web applications built from the ground up, tailored to your specific business needs and workflows — including robust RESTful and GraphQL APIs with authentication and rate limiting, and security-first architecture with encryption, audit trails, and compliance built in from day one.' },
-  { num: '02', name: 'Modern UI/UX Interfaces', desc: 'Pixel-perfect, responsive frontends that prioritize user experience, accessibility, and performance — designed with clean component systems, thoughtful micro-interactions, and consistent design language across every screen and device size.' },
-  { num: '03', name: 'Deployment & Maintenance',desc: 'CI/CD pipelines, containerized deployments, cloud infrastructure, and ongoing support contracts — with automated testing, monitoring, and rollback strategies to keep your systems running reliably long after launch.' },
+  {
+    num: '01',
+    name: 'Websites & Web Apps',
+    desc: 'From business websites to custom platforms, we build fast and reliable digital products designed around what you actually need.'
+  },
+  {
+    num: '02',
+    name: 'Product & UI/UX Design',
+    desc: 'We turn ideas into clear, modern, and easy-to-use experiences that look great and work naturally on any device.'
+  },
+  {
+    num: '03',
+    name: 'Launch & Ongoing Support',
+    desc: 'We handle the technical side of launching your product and help keep it secure, updated, reliable, and ready to grow.'
+  },
 ]
 
 export const TECH_LANGUAGES = [

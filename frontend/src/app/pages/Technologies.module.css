@@ -1,46 +1,123 @@
 .tech { background: rgba(13,8,33,0.85); }
 
-.groupTitle {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-bottom: 1.2rem;
-  margin-top: 2.5rem;
-}
-.groupTitle::before { content: ''; }
+.content { margin-top: 2.25rem; }
 
+.intro {
+  max-width: 760px;
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.7vw, 18px);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.capabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.capabilityCard {
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--glass-fill);
+  backdrop-filter: blur(8px);
+}
+
+.capabilityCard:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.capabilityCard h3 {
+  color: var(--green3);
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.2;
+  margin-bottom: 0.55rem;
+}
+
+.capabilityCard p {
+  color: var(--muted);
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.65;
+  max-width: 54ch;
+}
+
+.featuredTech,
 .grid {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 0.5rem;
 }
 
+.featuredTech { margin-top: 1.2rem; }
+
 .chip {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  background: var(--bg3);
+  gap: 7px;
+  min-height: 32px;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.035);
   border: 1px solid var(--border);
-  border-radius: 3px;
+  border-radius: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.chip img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  filter: brightness(0.9) saturate(0.8);
+}
+
+.chip:hover {
+  border-color: rgba(47,148,216,0.55);
+  color: var(--green3);
+  background: rgba(47,148,216,0.07);
+}
+
+.fullStack {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1.25rem;
+}
+
+.stackToggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--green2);
   font-family: var(--font-mono);
   font-size: 11px;
+  letter-spacing: 0.5px;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.stackToggle:hover { color: var(--green3); }
+
+.stackPanel {
+  padding-top: 0.75rem;
+}
+
+.groupTitle {
+  font-family: var(--font-mono);
+  font-size: 9px;
   color: var(--muted);
-  transition: border-color 0.2s, color 0.2s;
-  cursor: default;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  margin: 1.5rem 0 0.8rem;
 }
-.chip img {
-  width: 16px;
-  height: 16px;
-  object-fit: contain;
-  filter: brightness(0.85) saturate(0.7);
-  transition: filter 0.2s;
+
+@media (max-width: 760px) {
+  .capabilityGrid { grid-template-columns: 1fr; }
+  .capabilityCard:last-child:nth-child(odd) { grid-column: auto; }
+  .capabilityCard { padding: 1.25rem; }
 }
-.chip:hover {
-  border-color: var(--green2);
-  color: var(--green3);
-}
-.chip:hover img { filter: brightness(1) saturate(1); }
