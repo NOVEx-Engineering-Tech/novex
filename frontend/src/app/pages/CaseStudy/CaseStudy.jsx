@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect } from 'react'
+import { useState, useLayoutEffect, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import styles from './CaseStudy.module.css'
 
@@ -12,6 +12,14 @@ const CONTENT_MAP = {
   stockkernel: stockkernelContent,
 }
 
+const PROJECT_ORDER = ['agora', 'premium', 'stockkernel']
+
+const PROJECT_LABELS = {
+  agora: 'AGORA',
+  premium: 'PREMIUM COFFEE',
+  stockkernel: 'STOCKKERNEL',
+}
+
 const TOC = [
   { id: 'overview', num: '00', label: 'Overview' },
   { id: 'problem', num: '01', label: 'Problem & Goals' },
@@ -21,36 +29,70 @@ const TOC = [
   { id: 'security', num: '05', label: 'Security' },
   { id: 'sprints', num: '06', label: 'Sprint Roadmap' },
   { id: 'post-mortem', num: '07', label: 'Post-Mortem' },
-  { id: 'outcome', num: '08', label: 'exit', isExit: true },
+  { id: 'outcome', num: '08', label: 'Outcome' },
 ]
 
 function Screenshot({ src, alt, onOpen }) {
   if (!src) return null
+
   return (
-    <button type="button" className={styles.screenshotFrame} onClick={() => onOpen?.(src, alt)}>
+    <button
+      type="button"
+      className={styles.screenshotFrame}
+      onClick={() => onOpen?.(src, alt)}
+    >
       <div className={styles.screenshotChrome}>
         <span className={styles.screenshotDot} />
         <span className={styles.screenshotDot} />
         <span className={styles.screenshotDot} />
       </div>
-      <img src={src} alt={alt} loading="lazy" className={styles.screenshotImg} />
+
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        className={styles.screenshotImg}
+      />
     </button>
   )
 }
 
 function ModuleCard({ item, onOpenImage }) {
   return (
-    <div className={`${styles.moduleCard} ${item.featured ? styles.moduleCardFeatured : ''}`}>
+    <div
+      className={`${styles.moduleCard} ${
+        item.featured ? styles.moduleCardFeatured : ''
+      }`}
+    >
       <div className={styles.moduleIcon}>
-        <span className="material-symbols-outlined">{item.icon}</span>
+        <span className="material-symbols-outlined">
+          {item.icon}
+        </span>
       </div>
-      <div className={styles.moduleNum}>MODULE {item.num}</div>
-      <h3 className={styles.moduleTitle}>{item.title}</h3>
-      <p className={styles.moduleBody}>{item.body}</p>
+
+      <div className={styles.moduleNum}>
+        MODULE {item.num}
+      </div>
+
+      <h3 className={styles.moduleTitle}>
+        {item.title}
+      </h3>
+
+      <p className={styles.moduleBody}>
+        {item.body}
+      </p>
+
       {item.image && (
-        <Screenshot src={item.image} alt={item.title} onOpen={onOpenImage} />
+        <Screenshot
+          src={item.image}
+          alt={item.title}
+          onOpen={onOpenImage}
+        />
       )}
-      <div className={styles.moduleTag}>{item.tag}</div>
+
+      <div className={styles.moduleTag}>
+        {item.tag}
+      </div>
     </div>
   )
 }
@@ -59,17 +101,43 @@ function Incident({ item }) {
   return (
     <div className={styles.incidentCard}>
       <div className={styles.incidentHead}>
-        <span className={styles.incidentBadge}>INCIDENT {item.num}</span>
-        <span className="material-symbols-outlined" style={{ color: '#f87171' }}>{item.icon}</span>
+        <span className={styles.incidentBadge}>
+          INCIDENT {item.num}
+        </span>
+
+        <span
+          className="material-symbols-outlined"
+          style={{ color: '#f87171' }}
+        >
+          {item.icon}
+        </span>
       </div>
-      <h3 className={styles.incidentTitle}>{item.title}</h3>
+
+      <h3 className={styles.incidentTitle}>
+        {item.title}
+      </h3>
+
       <div className={styles.incidentSymptom}>
         <strong>SYMPTOM:</strong> {item.symptom}
       </div>
-      <p className={styles.incidentText}><strong>Root Cause:</strong> {item.cause}</p>
-      <p className={styles.incidentText}><strong className={styles.accentText}>Resolution:</strong> {item.fix}</p>
+
+      <p className={styles.incidentText}>
+        <strong>Root Cause:</strong> {item.cause}
+      </p>
+
+      <p className={styles.incidentText}>
+        <strong className={styles.accentText}>
+          Resolution:
+        </strong>{' '}
+        {item.fix}
+      </p>
+
       <div className={styles.incidentResolved}>
-        <span className="material-symbols-outlined">check_circle</span> {item.resolved}
+        <span className="material-symbols-outlined">
+          check_circle
+        </span>
+
+        {item.resolved}
       </div>
     </div>
   )
@@ -77,24 +145,80 @@ function Incident({ item }) {
 
 export default function CaseStudy() {
   const { id } = useParams()
-  useLayoutEffect(() => {
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: 'instant',
-  })
-}, [id])
-  const data = CONTENT_MAP[id]
+
   const [navOpen, setNavOpen] = useState(false)
   const [lightbox, setLightbox] = useState(null)
-  const openImage = (src, alt) => setLightbox({ src, alt })
+  const [activeSection, setActiveSection] = useState('overview')
+
+  const data = CONTENT_MAP[id]
+
+  useLayoutEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    })
+  }, [id])
+
+  const currentProjectIndex = PROJECT_ORDER.indexOf(id)
+
+  const previousProject =
+    currentProjectIndex > 0
+      ? PROJECT_ORDER[currentProjectIndex - 1]
+      : null
+
+  const nextProject =
+    currentProjectIndex < PROJECT_ORDER.length - 1
+      ? PROJECT_ORDER[currentProjectIndex + 1]
+      : null
+
+  useEffect(() => {
+    const sections = TOC
+      .map(section => document.getElementById(section.id))
+      .filter(Boolean)
+
+    if (!sections.length) return
+
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort(
+            (a, b) =>
+              a.boundingClientRect.top -
+              b.boundingClientRect.top
+          )
+
+        if (visible.length) {
+          setActiveSection(visible[0].target.id)
+        }
+      },
+      {
+        rootMargin: '-120px 0px -55% 0px',
+        threshold: 0,
+      }
+    )
+
+    sections.forEach(section => observer.observe(section))
+
+    return () => observer.disconnect()
+  }, [id])
+
+  const openImage = (src, alt) => {
+    setLightbox({
+      src,
+      alt,
+    })
+  }
 
   if (!data) {
     return (
       <main className={styles.notFound}>
         <p>Case study not found.</p>
-        <Link to="/projects">Back to Projects</Link>
-      
+
+        <Link to="/projects">
+          Back to Projects
+        </Link>
       </main>
     )
   }
@@ -108,138 +232,287 @@ export default function CaseStudy() {
   }
 
   return (
-    <main className={styles.page} style={accentVars}>
-      {/* Terminal intro strip */}
+    <main
+      className={styles.page}
+      style={accentVars}
+    >
+      {/* Terminal intro */}
       <div className={styles.container}>
         <div className={styles.terminalStrip}>
-          <span className={styles.terminalPrompt}>novex@corp:~$</span>
-          <span>case-study --inspect {id} --depth=deep</span>
+          <span className={styles.terminalPrompt}>
+            novex@corp:~$
+          </span>
+
+          <span>
+            case-study --inspect {id} --depth=deep
+          </span>
+
           <span className={styles.cursor} />
         </div>
       </div>
 
       <div className={styles.layout}>
-        {/* Desktop sticky TOC */}
+
+        {/* =========================================
+            DESKTOP SIDE NAVIGATION
+        ========================================= */}
         <aside className={styles.sidebar}>
+
           <div className={styles.sidebarCard}>
+
             <div className={styles.sidebarHead}>
-              <span className={styles.sidebarLabel}>// CONTENTS</span>
-              <span className={styles.sidebarPill}>DOC_MAP</span>
+              <span className={styles.sidebarLabel}>
+                // CONTENTS
+              </span>
+
+              <span className={styles.sidebarPill}>
+                DOC_MAP
+              </span>
             </div>
+
+            <div className={styles.caseProjectLabel}>
+              {data.hero.name}
+            </div>
+
             <nav className={styles.sidebarNav}>
-  {TOC.map(t => (
-    t.isExit ? (
-      <Link
-  key={t.id}
-  to="/projects"
-  className={styles.exitButton}
-  onClick={() => setNavOpen(false)}
->
-  {t.label}
-</Link>
-    ) : (
-      <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink}>
-        <span className={styles.sidebarNum}>{t.num}</span>
-        <span>{t.label}</span>
-      </a>
-    )
-  ))}
-</nav>
+              {TOC.map(section => (
+                <a
+                  key={section.id}
+                  href={`#${section.id}`}
+                  className={`${styles.sidebarLink} ${
+                    activeSection === section.id
+                      ? styles.sidebarLinkActive
+                      : ''
+                  }`}
+                >
+                  <span className={styles.sidebarNum}>
+                    {section.num}
+                  </span>
+
+                  <span>
+                    {section.label}
+                  </span>
+                </a>
+              ))}
+            </nav>
+
+            <Link
+              to="/projects"
+              className={styles.exitButton}
+            >
+              <span className="material-symbols-outlined">
+                arrow_back
+              </span>
+
+              ALL PROJECTS
+            </Link>
+
           </div>
+
         </aside>
 
-        {/* Mobile floating index button */}
+        {/* =========================================
+            MOBILE INDEX
+        ========================================= */}
         <button
           className={styles.mobileIndexBtn}
           onClick={() => setNavOpen(true)}
           aria-label="Open section index"
         >
-          <span className="material-symbols-outlined">segment</span> INDEX
+          <span className="material-symbols-outlined">
+            segment
+          </span>
+
+          INDEX
         </button>
+
         {navOpen && (
-          <div className={styles.mobileNavBackdrop} onClick={() => setNavOpen(false)}>
-            <aside className={styles.mobileNavDrawer} onClick={e => e.stopPropagation()}>
+          <div
+            className={styles.mobileNavBackdrop}
+            onClick={() => setNavOpen(false)}
+          >
+            <aside
+              className={styles.mobileNavDrawer}
+              onClick={event => event.stopPropagation()}
+            >
               <div className={styles.sidebarHead}>
-                <span className={styles.sidebarLabel}>CASE INDEX // {data.hero.name}</span>
-                <button onClick={() => setNavOpen(false)} aria-label="Close">
-                  <span className="material-symbols-outlined">close</span>
+                <span className={styles.sidebarLabel}>
+                  CASE INDEX // {data.hero.name}
+                </span>
+
+                <button
+                  className={styles.mobileClose}
+                  onClick={() => setNavOpen(false)}
+                  aria-label="Close"
+                >
+                  <span className="material-symbols-outlined">
+                    close
+                  </span>
                 </button>
               </div>
+
               <nav className={styles.sidebarNav}>
-  {TOC.map(t => (
-    t.isExit ? (
-      <Link
-  key={t.id}
-  to="/projects"
-  className={styles.exitButton}
-  onClick={() => setNavOpen(false)}
->
-  {t.label}
-</Link>
-    ) : (
-      <a key={t.id} href={`#${t.id}`} className={styles.sidebarLink} onClick={() => setNavOpen(false)}>
-        <span className={styles.sidebarNum}>{t.num}</span>
-        <span>{t.label}</span>
-      </a>
-    )
-  ))}
-</nav>
+                {TOC.map(section => (
+                  <a
+                    key={section.id}
+                    href={`#${section.id}`}
+                    className={`${styles.sidebarLink} ${
+                      activeSection === section.id
+                        ? styles.sidebarLinkActive
+                        : ''
+                    }`}
+                    onClick={() => setNavOpen(false)}
+                  >
+                    <span className={styles.sidebarNum}>
+                      {section.num}
+                    </span>
+
+                    <span>
+                      {section.label}
+                    </span>
+                  </a>
+                ))}
+              </nav>
+
+              <Link
+                to="/projects"
+                className={styles.exitButton}
+                onClick={() => setNavOpen(false)}
+              >
+                <span className="material-symbols-outlined">
+                  arrow_back
+                </span>
+
+                ALL PROJECTS
+              </Link>
             </aside>
           </div>
         )}
 
+        {/* =========================================
+            MAIN CASE STUDY CONTENT
+        ========================================= */}
         <div className={styles.content}>
-          {/* 0. OVERVIEW */}
-          <section id="overview" className={styles.section}>
+
+          {/* 00. OVERVIEW */}
+          <section
+            id="overview"
+            className={styles.section}
+          >
             <div className={styles.breadcrumbRow}>
               <div className={styles.breadcrumb}>
-                <Link to="/projects">// PROJECTS</Link>
+                <Link to="/projects">
+                  // PROJECTS
+                </Link>
+
                 <span>/</span>
-                <span className={styles.accentText}>{data.hero.kicker}</span>
+
+                <span className={styles.accentText}>
+                  {data.hero.kicker}
+                </span>
+
                 <span>/</span>
-                <span className={styles.white}>{data.hero.name}</span>
+
+                <span className={styles.white}>
+                  {data.hero.name}
+                </span>
               </div>
+
               <div className={styles.statusPill}>
-                <span className={styles.pulseDot} /> ● {data.hero.status}
+                <span className={styles.pulseDot} />
+
+                {data.hero.status}
               </div>
             </div>
 
             <div className={styles.heroBlock}>
               <div className={styles.heroTitleRow}>
-                <h1 className={styles.heroTitle}>{data.hero.name}<span className={styles.accentText}>.</span></h1>
-                <span className={styles.heroSubtitle}>{data.hero.subtitle}</span>
+                <h1 className={styles.heroTitle}>
+                  {data.hero.name}
+                  <span className={styles.accentText}>
+                    .
+                  </span>
+                </h1>
+
+                <span className={styles.heroSubtitle}>
+                  {data.hero.subtitle}
+                </span>
               </div>
-              <p className={styles.heroLead}>{data.hero.lead}</p>
-              <p className={styles.heroDesc}>{data.hero.description}</p>
+
+              <p className={styles.heroLead}>
+                {data.hero.lead}
+              </p>
+
+              <p className={styles.heroDesc}>
+                {data.hero.description}
+              </p>
             </div>
 
             {data.hero.image && (
               <div className={styles.heroShotWrap}>
-                <Screenshot src={data.hero.image} alt={`${data.hero.name} product screenshot`} onOpen={openImage} />
+                <Screenshot
+                  src={data.hero.image}
+                  alt={`${data.hero.name} product screenshot`}
+                  onOpen={openImage}
+                />
               </div>
             )}
 
             <div className={styles.taglineBanner}>
               <div className={styles.taglineLeft}>
-                <div className={styles.tallyBox}>卌 卌 卌</div>
+                <div className={styles.tallyBox}>
+                  卌 卌 卌
+                </div>
+
                 <div>
-                  <span className={styles.taglineLabel}>PROJECT TAGLINE</span>
-                  <p className={styles.taglineText}>"{data.hero.tagline}"</p>
+                  <span className={styles.taglineLabel}>
+                    PROJECT TAGLINE
+                  </span>
+
+                  <p className={styles.taglineText}>
+                    "{data.hero.tagline}"
+                  </p>
                 </div>
               </div>
             </div>
 
             <div className={styles.metaGrid}>
-              {data.metaCards.map((c, i) => (
-                <div key={i} className={styles.metaCard}>
+              {data.metaCards.map((card, index) => (
+                <div
+                  key={index}
+                  className={styles.metaCard}
+                >
                   <div className={styles.metaCardHead}>
-                    <span className="material-symbols-outlined">{c.icon}</span> {c.label}
+                    <span className="material-symbols-outlined">
+                      {card.icon}
+                    </span>
+
+                    {card.label}
                   </div>
-                  <div className={styles.metaCardValue}>{c.value}</div>
-                  {c.lines?.map((l, j) => <div key={j} className={styles.metaCardLine}>{l}</div>)}
-                  {c.tags && (
+
+                  <div className={styles.metaCardValue}>
+                    {card.value}
+                  </div>
+
+                  {card.lines?.map((line, lineIndex) => (
+                    <div
+                      key={lineIndex}
+                      className={styles.metaCardLine}
+                    >
+                      {line}
+                    </div>
+                  ))}
+
+                  {card.tags && (
                     <div className={styles.metaTags}>
-                      {c.tags.map((t, j) => <span key={j} className={styles.metaTag}>{t}</span>)}
+                      {card.tags.map((tag, tagIndex) => (
+                        <span
+                          key={tagIndex}
+                          className={styles.metaTag}
+                        >
+                          {tag}
+                        </span>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -247,220 +520,652 @@ export default function CaseStudy() {
             </div>
 
             <div className={styles.stackRow}>
-              <span className={styles.stackLabel}>// TECH STACK:</span>
-              {data.techStack.map((t, i) => (
-                <span key={i} className={styles.stackBadge}>{t}</span>
+              <span className={styles.stackLabel}>
+                // TECH STACK:
+              </span>
+
+              {data.techStack.map((tech, index) => (
+                <span
+                  key={index}
+                  className={styles.stackBadge}
+                >
+                  {tech}
+                </span>
               ))}
             </div>
-
-            
           </section>
 
-          {/* 1. PROBLEM & GOALS */}
-          <section id="problem" className={styles.section}>
+          {/* 01. PROBLEM */}
+          <section
+            id="problem"
+            className={styles.section}
+          >
             <div className={styles.card}>
               <div className={styles.twoCol}>
                 <div>
-                  <div className={styles.eyebrow}><span className={styles.accentText}>// 01</span> The Problem</div>
-                  <h2 className={styles.h2}>{data.problem.title}</h2>
-                  <p className={styles.body}>{data.problem.body}</p>
+                  <div className={styles.eyebrow}>
+                    <span className={styles.accentText}>
+                      // 01
+                    </span>
+
+                    The Problem
+                  </div>
+
+                  <h2 className={styles.h2}>
+                    {data.problem.title}
+                  </h2>
+
+                  <p className={styles.body}>
+                    {data.problem.body}
+                  </p>
+
                   <div className={styles.painBox}>
-                    <div className={styles.accentText}>&gt; OPERATIONAL PAIN POINTS:</div>
-                    {data.problem.painPoints.map((p, i) => (
-                      <div key={i} className={styles.painItem}><span>✕</span> {p}</div>
-                    ))}
+                    <div className={styles.accentText}>
+                      &gt; OPERATIONAL PAIN POINTS:
+                    </div>
+
+                    {data.problem.painPoints.map(
+                      (point, index) => (
+                        <div
+                          key={index}
+                          className={styles.painItem}
+                        >
+                          <span>✕</span>
+
+                          {point}
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
+
                 <div>
-                  <div className={styles.eyebrow}><span className={styles.accent2Text}>// GOALS</span> Key Objectives</div>
-                  <p className={styles.body}>{data.problem.goalsIntro}</p>
+                  <div className={styles.eyebrow}>
+                    <span className={styles.accent2Text}>
+                      // GOALS
+                    </span>
+
+                    Key Objectives
+                  </div>
+
+                  <p className={styles.body}>
+                    {data.problem.goalsIntro}
+                  </p>
+
                   <div className={styles.goalGrid}>
-                    {data.problem.goals.map((g, i) => (
-                      <div key={i} className={styles.goalCard}>
-                        <div className={styles.goalHead}>
-                          <div className={styles.goalIcon}><span className="material-symbols-outlined">{g.icon}</span></div>
-                          <span className={styles.goalTitle}>{g.title}</span>
+                    {data.problem.goals.map(
+                      (goal, index) => (
+                        <div
+                          key={index}
+                          className={styles.goalCard}
+                        >
+                          <div className={styles.goalHead}>
+                            <div className={styles.goalIcon}>
+                              <span className="material-symbols-outlined">
+                                {goal.icon}
+                              </span>
+                            </div>
+
+                            <span className={styles.goalTitle}>
+                              {goal.title}
+                            </span>
+                          </div>
+
+                          <p className={styles.goalBody}>
+                            {goal.body}
+                          </p>
                         </div>
-                        <p className={styles.goalBody}>{g.body}</p>
-                      </div>
-                    ))}
+                      )
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
-          {/* 2. ARCHITECTURE */}
-          <section id="architecture" className={styles.section}>
-            <div className={styles.eyebrow}><span className={styles.accentText}>// 02</span> System Architecture</div>
-            <h2 className={styles.h2}>{data.architecture.title}</h2>
-            <p className={styles.lead}>{data.architecture.lead}</p>
+          {/* 02. ARCHITECTURE */}
+          <section
+            id="architecture"
+            className={styles.section}
+          >
+            <div className={styles.eyebrow}>
+              <span className={styles.accentText}>
+                // 02
+              </span>
+
+              System Architecture
+            </div>
+
+            <h2 className={styles.h2}>
+              {data.architecture.title}
+            </h2>
+
+            <p className={styles.lead}>
+              {data.architecture.lead}
+            </p>
 
             <div className={styles.tierGrid}>
-              {data.architecture.tiers.map((t, i) => (
-                <div key={i} className={styles.tierCard}>
-                  <div className={styles.tierHead}>
-                    <span className={styles.tierBadge}>TIER {t.num}</span>
-                    <span className="material-symbols-outlined">{t.icon}</span>
+              {data.architecture.tiers.map(
+                (tier, index) => (
+                  <div
+                    key={index}
+                    className={styles.tierCard}
+                  >
+                    <div className={styles.tierHead}>
+                      <span className={styles.tierBadge}>
+                        TIER {tier.num}
+                      </span>
+
+                      <span className="material-symbols-outlined">
+                        {tier.icon}
+                      </span>
+                    </div>
+
+                    <h3 className={styles.tierTitle}>
+                      {tier.title}
+                    </h3>
+
+                    <p className={styles.tierBody}>
+                      {tier.body}
+                    </p>
+
+                    <div className={styles.tierStack}>
+                      {tier.stack.map(
+                        (stackItem, stackIndex) => (
+                          <div key={stackIndex}>
+                            ● {stackItem}
+                          </div>
+                        )
+                      )}
+                    </div>
+
+                    {tier.image && (
+                      <Screenshot
+                        src={tier.image}
+                        alt={tier.title}
+                        onOpen={openImage}
+                      />
+                    )}
+
+                    <div className={styles.tierHosted}>
+                      Hosted: {tier.hosted}
+                    </div>
                   </div>
-                  <h3 className={styles.tierTitle}>{t.title}</h3>
-                  <p className={styles.tierBody}>{t.body}</p>
-                  <div className={styles.tierStack}>
-                    {t.stack.map((s, j) => <div key={j}>● {s}</div>)}
-                  </div>
-                  {t.image && (
-                    <Screenshot src={t.image} alt={t.title} onOpen={openImage} />
-                  )}
-                  <div className={styles.tierHosted}>Hosted: {t.hosted}</div>
-                </div>
-              ))}
+                )
+              )}
             </div>
 
             <div className={styles.pipelineGrid}>
               <div className={styles.pipelineCard}>
                 <div className={styles.pipelineHead}>
-                  <span className={styles.accentText}>// REQUEST PIPELINE</span>
+                  <span className={styles.accentText}>
+                    // REQUEST PIPELINE
+                  </span>
                 </div>
+
                 <div className={styles.pipelineChain}>
-                  {data.architecture.pipeline.map((step, i) => (
-                    <>
-                      <div key={step} className={styles.pipelineStep}>{i + 1}. {step}</div>
-                      {i < data.architecture.pipeline.length - 1 && <span key={`${step}-arrow`} className={styles.arrow}>→</span>}
-                    </>
-                  ))}
+                  {data.architecture.pipeline.map(
+                    (step, index) => (
+                      <div
+                        key={step}
+                        className={styles.pipelineGroup}
+                      >
+                        <div className={styles.pipelineStep}>
+                          {index + 1}. {step}
+                        </div>
+
+                        {index <
+                          data.architecture.pipeline.length - 1 && (
+                          <span
+                            className={styles.arrow}
+                          >
+                            →
+                          </span>
+                        )}
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
+
               <div className={styles.realtimeCard}>
                 <div className={styles.eyebrow}>
-                  <span className={styles.pulseDotSmall} /> Real-Time Sync Layer
+                  <span className={styles.pulseDotSmall} />
+
+                  Real-Time Sync Layer
                 </div>
-                <h3 className={styles.tierTitle}>{data.architecture.realtime.title}</h3>
-                <p className={styles.tierBody}>{data.architecture.realtime.body}</p>
+
+                <h3 className={styles.tierTitle}>
+                  {data.architecture.realtime.title}
+                </h3>
+
+                <p className={styles.tierBody}>
+                  {data.architecture.realtime.body}
+                </p>
+
                 <div className={styles.codeBox}>
-                  {data.architecture.realtime.events.map((e, i) => <div key={i}>&gt; {e}</div>)}
+                  {data.architecture.realtime.events.map(
+                    (event, index) => (
+                      <div key={index}>
+                        &gt; {event}
+                      </div>
+                    )
+                  )}
                 </div>
-                <div className={styles.tierHosted}>{data.architecture.realtime.footnote}</div>
+
+                <div className={styles.tierHosted}>
+                  {data.architecture.realtime.footnote}
+                </div>
               </div>
             </div>
           </section>
 
-          {/* 3. DATA MODEL */}
-          <section id="data-model" className={styles.section}>
-            <div className={styles.eyebrow}><span className={styles.accent2Text}>// 03</span> Data Architecture</div>
-            <h2 className={styles.h2}>{data.dataModel.title}</h2>
-            <p className={styles.lead}>{data.dataModel.lead}</p>
+          {/* 03. DATA MODEL */}
+          <section
+            id="data-model"
+            className={styles.section}
+          >
+            <div className={styles.eyebrow}>
+              <span className={styles.accent2Text}>
+                // 03
+              </span>
+
+              Data Architecture
+            </div>
+
+            <h2 className={styles.h2}>
+              {data.dataModel.title}
+            </h2>
+
+            <p className={styles.lead}>
+              {data.dataModel.lead}
+            </p>
+
             <div className={styles.domainGrid}>
-              {data.dataModel.domains.map((d, i) => (
-                <div key={i} className={`${styles.domainCard} ${d.wide ? styles.domainCardWide : ''}`}>
-                  <div className={styles.domainHead}>
-                    <span className={styles.accentText}>DOMAIN {d.num}</span>
-                    <span className="material-symbols-outlined">{d.icon}</span>
+              {data.dataModel.domains.map(
+                (domain, index) => (
+                  <div
+                    key={index}
+                    className={`${styles.domainCard} ${
+                      domain.wide
+                        ? styles.domainCardWide
+                        : ''
+                    }`}
+                  >
+                    <div className={styles.domainHead}>
+                      <span className={styles.accentText}>
+                        DOMAIN {domain.num}
+                      </span>
+
+                      <span className="material-symbols-outlined">
+                        {domain.icon}
+                      </span>
+                    </div>
+
+                    <h3 className={styles.tierTitle}>
+                      {domain.title}
+                    </h3>
+
+                    <p className={styles.tierBody}>
+                      {domain.body}
+                    </p>
+
+                    <div className={styles.tierStack}>
+                      {domain.facts.map(
+                        (fact, factIndex) => (
+                          <div key={factIndex}>
+                            ● {fact}
+                          </div>
+                        )
+                      )}
+                    </div>
+
+                    {domain.image && (
+                      <Screenshot
+                        src={domain.image}
+                        alt={domain.title}
+                        onOpen={openImage}
+                      />
+                    )}
+
+                    <div className={styles.tierHosted}>
+                      Rule: {domain.rule}
+                    </div>
                   </div>
-                  <h3 className={styles.tierTitle}>{d.title}</h3>
-                  <p className={styles.tierBody}>{d.body}</p>
-                  <div className={styles.tierStack}>
-                    {d.facts.map((f, j) => <div key={j}>● {f}</div>)}
-                  </div>
-                  {d.image && (
-                    <Screenshot src={d.image} alt={d.title} onOpen={openImage} />
-                  )}
-                  <div className={styles.tierHosted}>Rule: {d.rule}</div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </section>
 
-          {/* 4. CORE MODULES */}
-          <section id="core-modules" className={styles.section}>
-            <div className={styles.eyebrow}><span className={styles.accentText}>// 04</span> Functional Walkthrough</div>
-            <h2 className={styles.h2}>{data.modules.title}</h2>
-            <p className={styles.lead}>{data.modules.lead}</p>
+          {/* 04. CORE MODULES */}
+          <section
+            id="core-modules"
+            className={styles.section}
+          >
+            <div className={styles.eyebrow}>
+              <span className={styles.accentText}>
+                // 04
+              </span>
+
+              Functional Walkthrough
+            </div>
+
+            <h2 className={styles.h2}>
+              {data.modules.title}
+            </h2>
+
+            <p className={styles.lead}>
+              {data.modules.lead}
+            </p>
+
             <div className={styles.moduleGrid}>
-              {data.modules.items.map((m, i) => <ModuleCard key={i} item={m} onOpenImage={openImage} />)}
+              {data.modules.items.map(
+                (module, index) => (
+                  <ModuleCard
+                    key={index}
+                    item={module}
+                    onOpenImage={openImage}
+                  />
+                )
+              )}
             </div>
           </section>
 
-          {/* 5 & 6. SECURITY + SPRINTS */}
-          <section id="security" className={styles.section}>
+          {/* 05 + 06. SECURITY + SPRINTS */}
+          <section
+            id="security"
+            className={styles.section}
+          >
             <div className={styles.twoCol}>
               <div>
-                <div className={styles.eyebrow}><span className={styles.accent2Text}>// 05</span> Security Architecture</div>
-                <h2 className={styles.h2}>{data.security.title}</h2>
-                <p className={styles.body}>{data.security.lead}</p>
+                <div className={styles.eyebrow}>
+                  <span className={styles.accent2Text}>
+                    // 05
+                  </span>
+
+                  Security Architecture
+                </div>
+
+                <h2 className={styles.h2}>
+                  {data.security.title}
+                </h2>
+
+                <p className={styles.body}>
+                  {data.security.lead}
+                </p>
+
                 <div className={styles.securityList}>
-                  {data.security.items.map((s, i) => (
-                    <div key={i} className={styles.securityItem}>
-                      <span className="material-symbols-outlined">{s.icon}</span>
-                      <div><strong className={styles.accentText}>{s.label}:</strong> {s.body}</div>
-                    </div>
-                  ))}
+                  {data.security.items.map(
+                    (security, index) => (
+                      <div
+                        key={index}
+                        className={styles.securityItem}
+                      >
+                        <span className="material-symbols-outlined">
+                          {security.icon}
+                        </span>
+
+                        <div>
+                          <strong
+                            className={styles.accentText}
+                          >
+                            {security.label}:
+                          </strong>{' '}
+
+                          {security.body}
+                        </div>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
+
               <div id="sprints">
                 <div className={styles.sprintHeadRow}>
-                  <div className={styles.eyebrow}><span className={styles.accentText}>// 06</span> {data.sprints.title}</div>
-                  <span className={styles.stackBadge}>TOTAL: {data.sprints.totalTickets} TICKETS</span>
+                  <div className={styles.eyebrow}>
+                    <span className={styles.accentText}>
+                      // 06
+                    </span>
+
+                    {data.sprints.title}
+                  </div>
+
+                  <span className={styles.stackBadge}>
+                    TOTAL: {data.sprints.totalTickets}{' '}
+                    TICKETS
+                  </span>
                 </div>
-                <p className={styles.body}>{data.sprints.lead}</p>
+
+                <p className={styles.body}>
+                  {data.sprints.lead}
+                </p>
+
                 <div className={styles.sprintTable}>
-                  {data.sprints.items.map((s, i) => (
-                    <div key={i} className={styles.sprintRow}>
-                      <div>
-                        <div className={styles.white}>{s.name}</div>
-                        <div className={styles.sprintDesc}>{s.desc}</div>
+                  {data.sprints.items.map(
+                    (sprint, index) => (
+                      <div
+                        key={index}
+                        className={styles.sprintRow}
+                      >
+                        <div>
+                          <div className={styles.white}>
+                            {sprint.name}
+                          </div>
+
+                          <div
+                            className={styles.sprintDesc}
+                          >
+                            {sprint.desc}
+                          </div>
+                        </div>
+
+                        <div className={styles.sprintDates}>
+                          {sprint.dates}
+                        </div>
+
+                        <div
+                          className={
+                            styles.sprintTickets
+                          }
+                        >
+                          {sprint.tickets}
+                        </div>
+
+                        <span className={styles.doneBadge}>
+                          DONE
+                        </span>
                       </div>
-                      <div className={styles.sprintDates}>{s.dates}</div>
-                      <div className={styles.sprintTickets}>{s.tickets}</div>
-                      <span className={styles.doneBadge}>DONE</span>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </div>
           </section>
 
-          {/* 7. POST-MORTEM */}
-          <section id="post-mortem" className={styles.section}>
-            <div className={styles.eyebrow}><span className={styles.accentText}>// 07</span> Engineering Post-Mortem</div>
-            <h2 className={styles.h2}>{data.postMortem.title}</h2>
-            <p className={styles.lead}>{data.postMortem.lead}</p>
+          {/* 07. POST-MORTEM */}
+          <section
+            id="post-mortem"
+            className={styles.section}
+          >
+            <div className={styles.eyebrow}>
+              <span className={styles.accentText}>
+                // 07
+              </span>
+
+              Engineering Post-Mortem
+            </div>
+
+            <h2 className={styles.h2}>
+              {data.postMortem.title}
+            </h2>
+
+            <p className={styles.lead}>
+              {data.postMortem.lead}
+            </p>
+
             <div className={styles.incidentGrid}>
-              {data.postMortem.incidents.map((inc, i) => <Incident key={i} item={inc} />)}
+              {data.postMortem.incidents.map(
+                (incident, index) => (
+                  <Incident
+                    key={index}
+                    item={incident}
+                  />
+                )
+              )}
             </div>
           </section>
 
-          {/* 8. OUTCOME */}
-          <section id="outcome" className={styles.section}>
+          {/* 08. OUTCOME */}
+          <section
+            id="outcome"
+            className={styles.section}
+          >
             <div className={styles.outcomeBanner}>
               <div className={styles.outcomeLeft}>
-                <span className={styles.stackBadge}>{data.outcome.tag}</span>
-                <h3 className={styles.h2}>{data.outcome.title}</h3>
-                <p className={styles.body}>{data.outcome.body}</p>
+                <span className={styles.stackBadge}>
+                  {data.outcome.tag}
+                </span>
+
+                <h3 className={styles.h2}>
+                  {data.outcome.title}
+                </h3>
+
+                <p className={styles.body}>
+                  {data.outcome.body}
+                </p>
+
                 <div className={styles.checkRow}>
-                  {data.outcome.checks.map((c, i) => (
-                    <span key={i} className={styles.checkPill}>✔ {c}</span>
-                  ))}
+                  {data.outcome.checks.map(
+                    (check, index) => (
+                      <span
+                        key={index}
+                        className={styles.checkPill}
+                      >
+                        ✔ {check}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
+
               <div className={styles.statBox}>
-                <span className={styles.stackLabel}>{data.outcome.statLabel}</span>
-                <span className={styles.statValue}>{data.outcome.statValue}</span>
-                <span className={styles.accentText}>{data.outcome.statSub}</span>
+                <span className={styles.stackLabel}>
+                  {data.outcome.statLabel}
+                </span>
+
+                <span className={styles.statValue}>
+                  {data.outcome.statValue}
+                </span>
+
+                <span className={styles.accentText}>
+                  {data.outcome.statSub}
+                </span>
               </div>
             </div>
-
-            
           </section>
+
+          {/* =========================================
+              PREVIOUS / NEXT PROJECT
+          ========================================= */}
+          <div className={styles.projectPager}>
+
+            {previousProject ? (
+              <Link
+                to={`/projects/${previousProject}`}
+                className={styles.projectPagerLink}
+              >
+                <span
+                  className={styles.projectPagerDirection}
+                >
+                  ← PREVIOUS PROJECT
+                </span>
+
+                <strong>
+                  {PROJECT_LABELS[previousProject]}
+                </strong>
+              </Link>
+            ) : (
+              <Link
+                to="/projects"
+                className={styles.projectPagerLink}
+              >
+                <span
+                  className={styles.projectPagerDirection}
+                >
+                  ← BACK TO
+                </span>
+
+                <strong>
+                  ALL PROJECTS
+                </strong>
+              </Link>
+            )}
+
+            {nextProject ? (
+              <Link
+                to={`/projects/${nextProject}`}
+                className={`${styles.projectPagerLink} ${styles.projectPagerNext}`}
+              >
+                <span
+                  className={styles.projectPagerDirection}
+                >
+                  NEXT PROJECT →
+                </span>
+
+                <strong>
+                  {PROJECT_LABELS[nextProject]}
+                </strong>
+              </Link>
+            ) : (
+              <Link
+                to="/projects"
+                className={`${styles.projectPagerLink} ${styles.projectPagerNext}`}
+              >
+                <span
+                  className={styles.projectPagerDirection}
+                >
+                  FINISHED →
+                </span>
+
+                <strong>
+                  ALL PROJECTS
+                </strong>
+              </Link>
+            )}
+
+          </div>
         </div>
       </div>
 
+      {/* =========================================
+          LIGHTBOX
+      ========================================= */}
       {lightbox && (
-        <div className={styles.lightboxBackdrop} onClick={() => setLightbox(null)}>
-          <div className={styles.lightboxInner} onClick={e => e.stopPropagation()}>
-            <img src={lightbox.src} alt={lightbox.alt} />
-            <div className={styles.lightboxCaption}>{lightbox.alt}</div>
-            <button className={styles.lightboxClose} onClick={() => setLightbox(null)} aria-label="Close">
-              <span className="material-symbols-outlined">close</span>
+        <div
+          className={styles.lightboxBackdrop}
+          onClick={() => setLightbox(null)}
+        >
+          <div
+            className={styles.lightboxInner}
+            onClick={event => event.stopPropagation()}
+          >
+            <img
+              src={lightbox.src}
+              alt={lightbox.alt}
+            />
+
+            <div className={styles.lightboxCaption}>
+              {lightbox.alt}
+            </div>
+
+            <button
+              className={styles.lightboxClose}
+              onClick={() => setLightbox(null)}
+              aria-label="Close"
+            >
+              <span className="material-symbols-outlined">
+                close
+              </span>
             </button>
           </div>
         </div>
