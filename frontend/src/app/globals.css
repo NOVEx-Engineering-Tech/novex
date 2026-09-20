@@ -31,6 +31,7 @@ body {
 
 /* Fine grain texture — replaces the old CRT scanline for a softer, less "hacker terminal" feel */
 body::before {
+  display: none;
   content: '';
   position: fixed;
   inset: 0;

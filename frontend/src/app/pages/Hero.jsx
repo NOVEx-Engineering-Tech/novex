@@ -21,16 +21,36 @@ export default function Hero() {
   const visualRef = useRef(null)
   const blobWrapRef = useRef(null)
   const astroRef = useRef(null)
-  const [glowPos, setGlowPos] = useState({ x: -9999, y: -9999, visible: false })
+  const glowRef = useRef(null)
+  const glowFrameRef = useRef(null)
+  const glowTargetRef = useRef({ x: -9999, y: -9999, visible: false })
 
   useParticleCanvas(sectionRef, canvasRef)
   const typed = useTypewriter(TYPEWRITER_PHRASES)
 
   function onMouseMove(e) {
-    setGlowPos({ x: e.clientX, y: e.clientY, visible: true })
+    glowTargetRef.current.x = e.clientX
+    glowTargetRef.current.y = e.clientY
+    glowTargetRef.current.visible = true
+
+    if (glowFrameRef.current) return
+    glowFrameRef.current = requestAnimationFrame(() => {
+      glowFrameRef.current = null
+      const glow = glowRef.current
+      const target = glowTargetRef.current
+      if (!glow) return
+      glow.style.left = `${target.x}px`
+      glow.style.top = `${target.y}px`
+      glow.style.opacity = target.visible ? '1' : '0'
+    })
   }
   function onMouseLeave() {
-    setGlowPos(g => ({ ...g, visible: false }))
+    glowTargetRef.current.visible = false
+    if (glowFrameRef.current) cancelAnimationFrame(glowFrameRef.current)
+    glowFrameRef.current = requestAnimationFrame(() => {
+      glowFrameRef.current = null
+      if (glowRef.current) glowRef.current.style.opacity = '0'
+    })
   }
 
   // Parallax: the blob + astronaut drift slightly toward the cursor
@@ -45,16 +65,26 @@ export default function Hero() {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduceMotion) return
 
+    let frame = null
+    let lastX = 0
+    let lastY = 0
+
     function onMove(e) {
-      const rect = visual.getBoundingClientRect()
-      const cx = rect.left + rect.width / 2
-      const cy = rect.top + rect.height / 2
-      const dx = (e.clientX - cx) / rect.width
-      const dy = (e.clientY - cy) / rect.height
-      const blobWrap = blobWrapRef.current
-      const astro = astroRef.current
-      if (blobWrap) blobWrap.style.transform = `translate(${(dx * 12).toFixed(1)}px, ${(dy * 12).toFixed(1)}px) scale(1.02)`
-      if (astro) astro.style.transform = `translate(${(dx * 20).toFixed(1)}px, ${(dy * 20).toFixed(1)}px)`
+      lastX = e.clientX
+      lastY = e.clientY
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = null
+        const rect = visual.getBoundingClientRect()
+        const cx = rect.left + rect.width / 2
+        const cy = rect.top + rect.height / 2
+        const dx = (lastX - cx) / rect.width
+        const dy = (lastY - cy) / rect.height
+        const blobWrap = blobWrapRef.current
+        const astro = astroRef.current
+        if (blobWrap) blobWrap.style.transform = `translate3d(${(dx * 12).toFixed(1)}px, ${(dy * 12).toFixed(1)}px, 0) scale(1.02)`
+        if (astro) astro.style.transform = `translate3d(${(dx * 20).toFixed(1)}px, ${(dy * 20).toFixed(1)}px, 0)`
+      })
     }
     function onLeave() {
       const blobWrap = blobWrapRef.current
@@ -68,6 +98,7 @@ export default function Hero() {
     return () => {
       section.removeEventListener('mousemove', onMove)
       section.removeEventListener('mouseleave', onLeave)
+      if (frame) cancelAnimationFrame(frame)
     }
   }, [])
 
@@ -77,7 +108,7 @@ export default function Hero() {
 
       <div
         className={styles.mouseGlow}
-        style={{ left: glowPos.x, top: glowPos.y, opacity: glowPos.visible ? 1 : 0 }}
+        ref={glowRef} style={{ left: '-9999px', top: '-9999px', opacity: 0 }}
       />
 
       <div className={`container ${styles.inner}`}>

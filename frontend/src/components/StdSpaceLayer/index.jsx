@@ -26,26 +26,52 @@ import styles from './style.module.css'
  */
 export default function SpaceLayer({ videoSrc = '/assets/novex-bg.webm' }) {
   const canvasRef = useRef(null)
-  const videoRef = useRef(null)
+const videoRef = useRef(null)
+const scrollResumeTimerRef = useRef(null)
 
   // Continuous zoom tied directly to viewport width — as the screen
   // narrows the video scales up smoothly (no stepped breakpoints), so
   // it stays cropped/covering with no visible edge, without ever
   // overlapping outside its own fixed, overflow-hidden container.
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
+ useEffect(() => {
+  const video = videoRef.current
+  if (!video) return
 
-    function applyZoom() {
-      const w = window.innerWidth
-      // 1x at 900px+ wide, scales up to ~1.9x by 360px wide
-      const scale = Math.min(1.9, Math.max(1, 1 + (900 - w) / 620))
-      video.style.transform = `scale(${scale})`
+  let scrolling = false
+
+  const pauseDuringScroll = () => {
+    scrolling = true
+
+    if (!video.paused) {
+      video.pause()
     }
-    applyZoom()
-    window.addEventListener('resize', applyZoom)
-    return () => window.removeEventListener('resize', applyZoom)
-  }, [])
+
+    if (scrollResumeTimerRef.current) {
+      clearTimeout(scrollResumeTimerRef.current)
+    }
+
+    scrollResumeTimerRef.current = window.setTimeout(() => {
+      scrolling = false
+
+      if (!document.hidden) {
+        video.play().catch(() => {})
+      }
+    }, 180)
+  }
+
+  window.addEventListener('scroll', pauseDuringScroll, { passive: true })
+
+  return () => {
+    window.removeEventListener('scroll', pauseDuringScroll)
+
+    if (scrollResumeTimerRef.current) {
+      clearTimeout(scrollResumeTimerRef.current)
+    }
+
+    // Prevent an unnecessary play attempt during unmount.
+    scrolling = false
+  }
+}, [])
 
   useEffect(() => {
     const canvas = canvasRef.current

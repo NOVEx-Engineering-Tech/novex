@@ -234,92 +234,112 @@ export function useScrollSearchHint({ thresholdMs = 2500, idleGapMs = 200, suspe
  */
 export function useActiveSection(sectionIds) {
   const [active, setActive] = useState('')
+  const idsRef = useRef(sectionIds)
+
   useEffect(() => {
-    function onScroll() {
+    idsRef.current = sectionIds
+  }, [sectionIds])
+
+  useEffect(() => {
+    let ticking = false
+
+    function update() {
+      ticking = false
+      const y = window.scrollY + 80
       let current = ''
-      sectionIds.forEach(id => {
+
+      for (const id of idsRef.current) {
         const el = document.getElementById(id)
-        if (el && window.scrollY >= el.offsetTop - 80) current = id
-      })
-      setActive(current)
+        if (el && y >= el.offsetTop) current = id
+      }
+
+      setActive(prev => prev === current ? prev : current)
     }
+
+    function onScroll() {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(update)
+    }
+
+    update()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [sectionIds])
+  }, [])
+
   return active
 }
 
 // ── PARTICLE CANVAS HOOK ──
-/**
- * @uuid         UTL-HOOK-001:useParticleCanvas
- * @author       NOVEx Engineering Tech
- * @date         2026/08/16
- * @dependsOn    none
- *
- * @description
- * Drives an interactive, mouse-reactive particle/connection canvas animation inside a given section+canvas ref pair.
- */
-/**
- * @uniqueid UTL-HOOK-001:useParticleCanvas
- *
- * Returns nothing; manages the canvas animation as a side effect.
- */
 export function useParticleCanvas(sectionRef, canvasRef) {
   const mouse = useRef({ x: -9999, y: -9999 })
   const particlesRef = useRef([])
   const rafRef = useRef(null)
 
-  const PARTICLE_COUNT = 90
-  const CONNECTION_DIST = 140
+  const PARTICLE_COUNT = 72
+  const CONNECTION_DIST = 125
   const MOUSE_REPEL = 120
-  const MOUSE_ATTRACT = 200
-
-  const resize = useCallback(() => {
-    const canvas = canvasRef.current
-    const section = sectionRef.current
-    if (!canvas || !section) return
-    canvas.width = section.offsetWidth
-    canvas.height = section.offsetHeight
-  }, [canvasRef, sectionRef])
-
-  const makeParticle = useCallback((init = false) => {
-    const canvas = canvasRef.current
-    if (!canvas) return null
-    const W = canvas.width
-    const H = canvas.height
-    const CHARS = ['0','1','{','}','<','>','/','#','$','_']
-    return {
-      x: Math.random() * W,
-      y: init ? Math.random() * H : (Math.random() < 0.5 ? -10 : H + 10),
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 1.5 + 0.5,
-      baseAlpha: Math.random() * 0.4 + 0.15,
-      alpha: 0.15,
-      isChar: Math.random() < 0.18,
-      char: CHARS[Math.floor(Math.random() * CHARS.length)],
-      charAlpha: Math.random() * 0.12 + 0.04,
-    }
-  }, [canvasRef])
+  const MOUSE_ATTRACT = 190
+  const MAX_DPR = 1.5
+  const FRAME_MS = 1000 / 50
 
   useEffect(() => {
     const canvas = canvasRef.current
     const section = sectionRef.current
     if (!canvas || !section) return
 
-    resize()
-    particlesRef.current = Array.from(
-      { length: PARTICLE_COUNT },
-      () => makeParticle(true)
-    ).filter(Boolean)
+    const ctx = canvas.getContext('2d', { alpha: true })
+    if (!ctx) return
 
-    const ctx = canvas.getContext('2d')
+    let running = false
+    let lastFrame = 0
+    let resizeTimer = null
+    let dpr = 1
+    let width = 0
+    let height = 0
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    function resize() {
+      const rect = section.getBoundingClientRect()
+      width = Math.max(1, Math.round(rect.width))
+      height = Math.max(1, Math.round(rect.height))
+      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
+
+      canvas.width = Math.round(width * dpr)
+      canvas.height = Math.round(height * dpr)
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+
+    const CHARS = ['0', '1', '{', '}', '<', '>', '/', '#', '$', '_']
+
+    function makeParticle(init = false) {
+      return {
+        x: Math.random() * width,
+        y: init ? Math.random() * height : (Math.random() < 0.5 ? -10 : height + 10),
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.5 + 0.5,
+        baseAlpha: Math.random() * 0.4 + 0.15,
+        alpha: 0.15,
+        isChar: Math.random() < 0.16,
+        char: CHARS[Math.floor(Math.random() * CHARS.length)],
+        charAlpha: Math.random() * 0.12 + 0.04,
+      }
+    }
+
+    function resetParticles() {
+      particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => makeParticle(true))
+    }
 
     function update(p) {
-      const W = canvas.width, H = canvas.height
       const dx = p.x - mouse.current.x
       const dy = p.y - mouse.current.y
-      const dist = Math.sqrt(dx * dx + dy * dy)
+      const distSq = dx * dx + dy * dy
+      const dist = Math.sqrt(distSq) || 0.001
 
       if (dist < MOUSE_REPEL) {
         const force = (MOUSE_REPEL - dist) / MOUSE_REPEL
@@ -336,129 +356,206 @@ export function useParticleCanvas(sectionRef, canvasRef) {
       }
 
       const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
-      if (speed > 2.5) { p.vx = (p.vx / speed) * 2.5; p.vy = (p.vy / speed) * 2.5 }
-      p.vx *= 0.98; p.vy *= 0.98
-      p.x += p.vx; p.y += p.vy
+      if (speed > 2.5) {
+        p.vx = (p.vx / speed) * 2.5
+        p.vy = (p.vy / speed) * 2.5
+      }
 
-      if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) {
-        const fresh = makeParticle(false)
-        if (fresh) Object.assign(p, fresh)
+      p.vx *= 0.98
+      p.vy *= 0.98
+      p.x += p.vx
+      p.y += p.vy
+
+      if (p.x < -20 || p.x > width + 20 || p.y < -20 || p.y > height + 20) {
+        Object.assign(p, makeParticle(false))
       }
     }
 
-    function draw(p) {
+    function drawParticle(p) {
       if (p.isChar) {
-        ctx.save()
-        ctx.globalAlpha = p.charAlpha + (p.alpha - p.baseAlpha) * 0.3
+        ctx.globalAlpha = Math.max(0, p.charAlpha + (p.alpha - p.baseAlpha) * 0.3)
         ctx.fillStyle = '#ffffff'
         ctx.font = `${Math.floor(p.r * 7 + 8)}px 'JetBrains Mono', monospace`
         ctx.fillText(p.char, p.x, p.y)
-        ctx.restore()
       } else {
+        ctx.globalAlpha = p.alpha
+        ctx.fillStyle = '#ffffff'
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`
         ctx.fill()
       }
     }
 
     function drawConnections() {
       const ps = particlesRef.current
-      const mx = mouse.current.x, my = mouse.current.y
+      const mx = mouse.current.x
+      const my = mouse.current.y
+
+      ctx.lineWidth = 0.6
+
       for (let i = 0; i < ps.length; i++) {
+        const a = ps[i]
+
         for (let j = i + 1; j < ps.length; j++) {
-          const a = ps[i], b = ps[j]
-          const dx = a.x - b.x, dy = a.y - b.y
+          const b = ps[j]
+          const dx = a.x - b.x
+          const dy = a.y - b.y
           const dist = Math.sqrt(dx * dx + dy * dy)
+
           if (dist < CONNECTION_DIST) {
-            const mdx = (a.x + b.x) / 2 - mx
-            const mdy = (a.y + b.y) / 2 - my
+            const mdx = (a.x + b.x) * 0.5 - mx
+            const mdy = (a.y + b.y) * 0.5 - my
             const mdist = Math.sqrt(mdx * mdx + mdy * mdy)
             const boost = mdist < MOUSE_ATTRACT ? (1 - mdist / MOUSE_ATTRACT) * 0.4 : 0
+
+            ctx.globalAlpha = (1 - dist / CONNECTION_DIST) * 0.18 + boost
+            ctx.strokeStyle = '#2f94d8'
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
             ctx.lineTo(b.x, b.y)
-            ctx.strokeStyle = `rgba(47,148,216,${(1 - dist / CONNECTION_DIST) * 0.18 + boost})`
-            ctx.lineWidth = 0.6
             ctx.stroke()
           }
         }
-        const a = ps[i]
-        const mdx = a.x - mx, mdy = a.y - my
+
+        const mdx = a.x - mx
+        const mdy = a.y - my
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy)
         if (mdist < MOUSE_ATTRACT) {
+          ctx.globalAlpha = (1 - mdist / MOUSE_ATTRACT) * 0.5
+          ctx.strokeStyle = '#ffffff'
+          ctx.lineWidth = 0.8
           ctx.beginPath()
           ctx.moveTo(a.x, a.y)
           ctx.lineTo(mx, my)
-          ctx.strokeStyle = `rgba(255,255,255,${(1 - mdist / MOUSE_ATTRACT) * 0.5})`
-          ctx.lineWidth = 0.8
           ctx.stroke()
         }
       }
     }
 
     function drawMouseDot() {
-      const mx = mouse.current.x, my = mouse.current.y
-      const W = canvas.width
-      if (mx < 0 || mx > W) return
+      const mx = mouse.current.x
+      const my = mouse.current.y
+      if (mx < 0 || mx > width || my < 0 || my > height) return
+
+      ctx.globalAlpha = 0.7
+      ctx.fillStyle = '#2f94d8'
       ctx.beginPath()
       ctx.arc(mx, my, 3, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(47,148,216,0.7)'
       ctx.fill()
+
+      ctx.globalAlpha = 0.2
+      ctx.strokeStyle = '#2f94d8'
+      ctx.lineWidth = 1
       ctx.beginPath()
       ctx.arc(mx, my, 8, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(47,148,216,0.2)'
-      ctx.lineWidth = 1
       ctx.stroke()
     }
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    function frame(now) {
+      rafRef.current = requestAnimationFrame(frame)
+      if (!running || reducedMotion) return
+      if (now - lastFrame < FRAME_MS) return
+      lastFrame = now
+
+      ctx.clearRect(0, 0, width, height)
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.globalAlpha = 1
+
       drawConnections()
-      particlesRef.current.forEach(p => { update(p); draw(p) })
+      particlesRef.current.forEach(update)
+      particlesRef.current.forEach(drawParticle)
       drawMouseDot()
-      rafRef.current = requestAnimationFrame(animate)
+      ctx.globalAlpha = 1
     }
 
-    animate()
+    function start() {
+      if (running || reducedMotion) return
+      running = true
+      lastFrame = performance.now()
+      if (!rafRef.current) rafRef.current = requestAnimationFrame(frame)
+    }
+
+    function stop() {
+      running = false
+    }
 
     function onMouseMove(e) {
       const rect = section.getBoundingClientRect()
       mouse.current.x = e.clientX - rect.left
       mouse.current.y = e.clientY - rect.top
     }
+
     function onMouseLeave() {
       mouse.current.x = -9999
       mouse.current.y = -9999
     }
+
     function onClick(e) {
       const rect = section.getBoundingClientRect()
       const cx = e.clientX - rect.left
       const cy = e.clientY - rect.top
-      for (let i = 0; i < 6; i++) {
+
+      for (let i = 0; i < 4; i++) {
         const p = makeParticle(false)
-        if (!p) continue
-        p.x = cx; p.y = cy
+        p.x = cx
+        p.y = cy
         p.vx = (Math.random() - 0.5) * 4
         p.vy = (Math.random() - 0.5) * 4
-        p.alpha = 0.9; p.baseAlpha = 0.3
+        p.alpha = 0.9
+        p.baseAlpha = 0.3
         particlesRef.current.push(p)
-        if (particlesRef.current.length > PARTICLE_COUNT + 30)
-          particlesRef.current.splice(0, 6)
+      }
+
+      if (particlesRef.current.length > PARTICLE_COUNT + 20) {
+        particlesRef.current.splice(0, particlesRef.current.length - PARTICLE_COUNT - 20)
       }
     }
 
-    section.addEventListener('mousemove', onMouseMove)
-    section.addEventListener('mouseleave', onMouseLeave)
+    resize()
+    resetParticles()
+
+    const observer = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting ? start() : stop(),
+      { threshold: 0.01 }
+    )
+
+    observer.observe(section)
+
+    section.addEventListener('mousemove', onMouseMove, { passive: true })
+    section.addEventListener('mouseleave', onMouseLeave, { passive: true })
     section.addEventListener('click', onClick)
-    window.addEventListener('resize', resize)
+
+    function onResize() {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        resize()
+        resetParticles()
+      }, 100)
+    }
+
+    window.addEventListener('resize', onResize, { passive: true })
+    function onVisibilityChange() {
+      if (document.hidden) stop()
+      else if (document.visibilityState === 'visible') start()
+    }
+
+    document.addEventListener('visibilitychange', onVisibilityChange)
+
+    if (reducedMotion) {
+      ctx.clearRect(0, 0, width, height)
+      particlesRef.current.forEach(drawParticle)
+    }
 
     return () => {
+      observer.disconnect()
+      clearTimeout(resizeTimer)
       cancelAnimationFrame(rafRef.current)
       section.removeEventListener('mousemove', onMouseMove)
       section.removeEventListener('mouseleave', onMouseLeave)
       section.removeEventListener('click', onClick)
-      window.removeEventListener('resize', resize)
+      window.removeEventListener('resize', onResize)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-  }, [resize, makeParticle, canvasRef, sectionRef])
+  }, [canvasRef, sectionRef])
 }
+
