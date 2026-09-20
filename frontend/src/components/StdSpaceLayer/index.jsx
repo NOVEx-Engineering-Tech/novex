@@ -2,219 +2,466 @@
  * @uuid         CMP-LAY-001
  * @author       NOVEx Engineering Tech
  * @date         2026/08/16
- * @dependsOn    none
  *
  * @description
- * Fixed, full-viewport ambient backdrop layer: a looping background video, a twinkling star canvas with slow parallax dust, and occasional shooting stars, with a configurable video source.
+ * Fixed, full-viewport ambient backdrop layer:
+ * - looping NOVEx black-hole video
+ * - lightweight star canvas
+ * - occasional shooting stars
+ * - subtle nebula/orb atmosphere
  *
- * @whereToUse
- * Mount once near the root of the app (e.g. the top-level layout/App component), behind all page content.
- *
- * @whenToUse
- * Use whenever a page or app needs an animated space/starfield ambient background that reacts subtly to the viewport width.
+ * Performance notes:
+ * - Canvas is capped to a reasonable device pixel ratio.
+ * - Star rendering is limited to ~30 FPS.
+ * - Canvas animation pauses while scrolling.
+ * - Background video pauses briefly while scrolling.
+ * - Hidden tabs stop all animation work.
  */
 
 import { useEffect, useRef } from 'react'
 import styles from './style.module.css'
 
-/**
- * Fixed full-page ambient backdrop: the NOVEx blackhole video, a
- * twinkling star canvas with a slow parallax dust layer, and
- * occasional shooting stars. Sits behind all page content (z-index
- * handled in SpaceLayer.module.css) and is independent of any
- * per-section canvas effects (e.g. Hero's particle canvas).
- */
-export default function SpaceLayer({ videoSrc = '/assets/novex-bg.webm' }) {
+export default function SpaceLayer({
+  videoSrc = '/assets/novex-bg.webm',
+}) {
   const canvasRef = useRef(null)
-const videoRef = useRef(null)
-const scrollResumeTimerRef = useRef(null)
+  const videoRef = useRef(null)
 
-  // Continuous zoom tied directly to viewport width — as the screen
-  // narrows the video scales up smoothly (no stepped breakpoints), so
-  // it stays cropped/covering with no visible edge, without ever
-  // overlapping outside its own fixed, overflow-hidden container.
- useEffect(() => {
-  const video = videoRef.current
-  if (!video) return
+  const scrollResumeTimerRef = useRef(null)
 
-  let scrolling = false
+  /*
+   * ─────────────────────────────────────────────
+   * Background video
+   * ─────────────────────────────────────────────
+   */
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
 
-  const pauseDuringScroll = () => {
-    scrolling = true
-
-    if (!video.paused) {
-      video.pause()
-    }
-
-    if (scrollResumeTimerRef.current) {
-      clearTimeout(scrollResumeTimerRef.current)
-    }
-
-    scrollResumeTimerRef.current = window.setTimeout(() => {
-      scrolling = false
-
-      if (!document.hidden) {
-        video.play().catch(() => {})
+    const pauseDuringScroll = () => {
+      if (!video.paused) {
+        video.pause()
       }
-    }, 180)
-  }
 
-  window.addEventListener('scroll', pauseDuringScroll, { passive: true })
+      if (scrollResumeTimerRef.current) {
+        clearTimeout(scrollResumeTimerRef.current)
+      }
 
-  return () => {
-    window.removeEventListener('scroll', pauseDuringScroll)
-
-    if (scrollResumeTimerRef.current) {
-      clearTimeout(scrollResumeTimerRef.current)
+      scrollResumeTimerRef.current = window.setTimeout(() => {
+        if (!document.hidden) {
+          video.play().catch(() => {})
+        }
+      }, 180)
     }
 
-    // Prevent an unnecessary play attempt during unmount.
-    scrolling = false
-  }
-}, [])
+    window.addEventListener('scroll', pauseDuringScroll, {
+      passive: true,
+    })
 
+    return () => {
+      window.removeEventListener('scroll', pauseDuringScroll)
+
+      if (scrollResumeTimerRef.current) {
+        clearTimeout(scrollResumeTimerRef.current)
+      }
+    }
+  }, [])
+
+  /*
+   * ─────────────────────────────────────────────
+   * Star canvas
+   * ─────────────────────────────────────────────
+   */
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext('2d')
+
+    const ctx = canvas.getContext('2d', {
+      alpha: true,
+      desynchronized: true,
+    })
+
     if (!ctx) return
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    let w = 0
-    let h = 0
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches
+
+    let width = 0
+    let height = 0
+
     let ambient = []
     let dust = []
     let shooters = []
-    let rafId = 0
-    let shooterInterval
 
+    let animationFrame = 0
+    let shooterInterval = null
+
+    let running = true
+    let scrolling = false
+
+    /*
+     * 30 FPS is intentional.
+     *
+     * The space background is ambient decoration,
+     * so rendering it at 60/120/144/165 FPS provides
+     * very little visual benefit while increasing GPU/CPU work.
+     */
+    const TARGET_FPS = 30
+    const FRAME_TIME = 1000 / TARGET_FPS
+
+    let lastFrameTime = 0
+
+    /*
+     * Limit DPR.
+     *
+     * Without this, a high-DPI display can turn a
+     * 1920x1080 canvas into a 3840x2160 or larger
+     * rendering surface.
+     */
     function resize() {
-      // .spaceLayer is `position: fixed; inset: 0` — it only ever shows
-      // one viewport's worth. Sizing the canvas to the full page's
-      // scrollHeight (much taller on a long page) forces every frame to
-      // render a bitmap many times larger than what's visible, which
-      // the browser then has to downscale into the fixed box — a big,
-      // unnecessary cost repeated on every single frame.
-      w = canvas.width = window.innerWidth
-      h = canvas.height = window.innerHeight
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+
+      width = window.innerWidth
+      height = window.innerHeight
+
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
+
+      canvas.style.width = `${width}px`
+      canvas.style.height = `${height}px`
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
+
     function initStars() {
-      ambient = Array.from({ length: 120 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
+      /*
+       * 100 ambient stars instead of 120.
+       * The difference is visually negligible but reduces
+       * per-frame canvas work.
+       */
+      ambient = Array.from({ length: 100 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
         r: Math.random() * 1.4 + 0.3,
         phase: Math.random() * Math.PI * 2,
         speed: 0.4 + Math.random() * 0.8,
       }))
-      dust = Array.from({ length: 22 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 2.2 + 1.4,
+
+      /*
+       * Dust particles are intentionally kept low.
+       */
+      dust = Array.from({ length: 16 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2 + 1.4,
         vx: (Math.random() - 0.5) * 0.06,
         vy: 0.02 + Math.random() * 0.05,
         alpha: 0.08 + Math.random() * 0.16,
       }))
+
       shooters = []
     }
+
     function spawnShooter() {
-      if (reduceMotion) return
+      if (reduceMotion || !running || scrolling || document.hidden) {
+        return
+      }
+
+      /*
+       * Don't allow a large queue of shooting stars.
+       */
+      if (shooters.length >= 1) {
+        return
+      }
+
       shooters.push({
-        x: Math.random() * w * 0.7,
-        y: Math.random() * h * 0.3,
+        x: Math.random() * width * 0.7,
+        y: Math.random() * height * 0.3,
         len: 80 + Math.random() * 60,
         speed: 6 + Math.random() * 4,
         angle: Math.PI / 4 + Math.random() * 0.15,
         life: 1,
       })
     }
-    function tick(t) {
-      ctx.clearRect(0, 0, w, h)
 
-      dust.forEach((d) => {
+    function draw(timestamp) {
+      animationFrame = requestAnimationFrame(draw)
+
+      if (!running || scrolling || document.hidden) {
+        return
+      }
+
+      /*
+       * FPS limiter.
+       */
+      if (timestamp - lastFrameTime < FRAME_TIME) {
+        return
+      }
+
+      lastFrameTime = timestamp
+
+      ctx.clearRect(0, 0, width, height)
+
+      /*
+       * ─────────────────────────────
+       * Dust
+       * ─────────────────────────────
+       */
+      for (let i = 0; i < dust.length; i++) {
+        const d = dust[i]
+
         ctx.beginPath()
         ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
+
         ctx.fillStyle = `rgba(180,170,220,${d.alpha})`
         ctx.fill()
+
         if (!reduceMotion) {
           d.x += d.vx
           d.y += d.vy
-          if (d.y > h + 10) { d.y = -10; d.x = Math.random() * w }
-          if (d.x < -10) d.x = w + 10
-          if (d.x > w + 10) d.x = -10
-        }
-      })
 
-      ambient.forEach((s) => {
-        const tw = reduceMotion ? 0.6 : 0.5 + 0.5 * Math.sin(t * 0.0006 * s.speed + s.phase)
+          if (d.y > height + 10) {
+            d.y = -10
+            d.x = Math.random() * width
+          }
+
+          if (d.x < -10) d.x = width + 10
+          if (d.x > width + 10) d.x = -10
+        }
+      }
+
+      /*
+       * ─────────────────────────────
+       * Ambient stars
+       * ─────────────────────────────
+       */
+      for (let i = 0; i < ambient.length; i++) {
+        const star = ambient[i]
+
+        const twinkle = reduceMotion
+          ? 0.6
+          : 0.5 +
+            0.5 *
+              Math.sin(
+                timestamp * 0.0006 * star.speed +
+                  star.phase
+              )
+
         ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(245,243,255,${0.15 + tw * 0.55})`
+        ctx.arc(
+          star.x,
+          star.y,
+          star.r,
+          0,
+          Math.PI * 2
+        )
+
+        ctx.fillStyle = `rgba(245,243,255,${
+          0.15 + twinkle * 0.55
+        })`
+
         ctx.fill()
-      })
-      shooters.forEach((sh) => {
-        const dx = Math.cos(sh.angle) * sh.len
-        const dy = Math.sin(sh.angle) * sh.len
-        const grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - dx, sh.y - dy)
-        grad.addColorStop(0, 'rgba(255,255,255,0.9)')
-        grad.addColorStop(1, 'rgba(255,255,255,0)')
-        ctx.strokeStyle = grad
+      }
+
+      /*
+       * ─────────────────────────────
+       * Shooting stars
+       * ─────────────────────────────
+       */
+      for (let i = shooters.length - 1; i >= 0; i--) {
+        const shooter = shooters[i]
+
+        const dx =
+          Math.cos(shooter.angle) * shooter.len
+
+        const dy =
+          Math.sin(shooter.angle) * shooter.len
+
+        const gradient = ctx.createLinearGradient(
+          shooter.x,
+          shooter.y,
+          shooter.x - dx,
+          shooter.y - dy
+        )
+
+        gradient.addColorStop(
+          0,
+          'rgba(255,255,255,0.9)'
+        )
+
+        gradient.addColorStop(
+          1,
+          'rgba(255,255,255,0)'
+        )
+
+        ctx.strokeStyle = gradient
         ctx.lineWidth = 1.6
+
         ctx.beginPath()
-        ctx.moveTo(sh.x, sh.y)
-        ctx.lineTo(sh.x - dx, sh.y - dy)
+        ctx.moveTo(shooter.x, shooter.y)
+        ctx.lineTo(
+          shooter.x - dx,
+          shooter.y - dy
+        )
         ctx.stroke()
-        sh.x += Math.cos(sh.angle) * sh.speed
-        sh.y += Math.sin(sh.angle) * sh.speed
-        sh.life -= 0.006
-      })
-      shooters = shooters.filter((s) => s.life > 0 && s.y < h + 100)
-      rafId = requestAnimationFrame(tick)
+
+        shooter.x +=
+          Math.cos(shooter.angle) * shooter.speed
+
+        shooter.y +=
+          Math.sin(shooter.angle) * shooter.speed
+
+        shooter.life -= 0.006
+
+        if (
+          shooter.life <= 0 ||
+          shooter.y > height + 100
+        ) {
+          shooters.splice(i, 1)
+        }
+      }
+    }
+
+    /*
+     * ─────────────────────────────────────────────
+     * Scroll performance
+     * ─────────────────────────────────────────────
+     */
+    let scrollTimer = null
+
+    function handleScroll() {
+      scrolling = true
+
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
+      }
+
+      scrollTimer = window.setTimeout(() => {
+        scrolling = false
+      }, 120)
+    }
+
+    /*
+     * ─────────────────────────────────────────────
+     * Visibility
+     * ─────────────────────────────────────────────
+     */
+    function handleVisibility() {
+      if (document.hidden) {
+        running = false
+        shooters = []
+      } else {
+        running = true
+        lastFrameTime = 0
+      }
+    }
+
+    /*
+     * ─────────────────────────────────────────────
+     * Resize
+     * ─────────────────────────────────────────────
+     */
+    function handleResize() {
+      resize()
+      initStars()
     }
 
     resize()
     initStars()
-    rafId = requestAnimationFrame(tick)
-    if (!reduceMotion && !document.hidden) shooterInterval = window.setInterval(spawnShooter, 3200)
 
-    const onResize = () => { resize(); initStars() }
-    window.addEventListener('resize', onResize)
+    /*
+     * Start animation.
+     */
+    animationFrame = requestAnimationFrame(draw)
 
-    // requestAnimationFrame already pauses itself while the tab is
-    // hidden, but setInterval doesn't — browsers just throttle it
-    // (roughly once a second) instead of stopping it. Left alone, that
-    // means shooters keep queuing up while backgrounded with nothing
-    // running to animate or expire them, so they all render/animate at
-    // once in a burst the moment the tab regains focus. Explicitly
-    // pausing both on hide, and dropping anything queued on show,
-    // prevents that.
-    function onVisibilityChange() {
-      if (document.hidden) {
-        cancelAnimationFrame(rafId)
-        if (shooterInterval) { clearInterval(shooterInterval); shooterInterval = undefined }
-      } else {
-        shooters = []
-        rafId = requestAnimationFrame(tick)
-        if (!reduceMotion) shooterInterval = window.setInterval(spawnShooter, 3200)
-      }
+    /*
+     * Shooting stars are deliberately infrequent.
+     */
+    if (!reduceMotion) {
+      shooterInterval = window.setInterval(
+        spawnShooter,
+        4000
+      )
     }
-    document.addEventListener('visibilitychange', onVisibilityChange)
+
+    window.addEventListener(
+      'resize',
+      handleResize,
+      { passive: true }
+    )
+
+    window.addEventListener(
+      'scroll',
+      handleScroll,
+      { passive: true }
+    )
+
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibility
+    )
 
     return () => {
-      cancelAnimationFrame(rafId)
-      if (shooterInterval) clearInterval(shooterInterval)
-      window.removeEventListener('resize', onResize)
-      document.removeEventListener('visibilitychange', onVisibilityChange)
+      cancelAnimationFrame(animationFrame)
+
+      if (shooterInterval) {
+        clearInterval(shooterInterval)
+      }
+
+      if (scrollTimer) {
+        clearTimeout(scrollTimer)
+      }
+
+      window.removeEventListener(
+        'resize',
+        handleResize
+      )
+
+      window.removeEventListener(
+        'scroll',
+        handleScroll
+      )
+
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibility
+      )
     }
   }, [])
 
   return (
-    <div className={styles.spaceLayer} aria-hidden="true">
-      <video className={styles.bgVideo} ref={videoRef} autoPlay loop muted playsInline>
-        <source src={videoSrc} type="video/webm" />
+    <div
+      className={styles.spaceLayer}
+      aria-hidden="true"
+    >
+      <video
+        className={styles.bgVideo}
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+      >
+        <source
+          src={videoSrc}
+          type="video/webm"
+        />
       </video>
-      <canvas className={styles.starsCanvas} ref={canvasRef} />
-      <div className={`${styles.orb} ${styles.orb1}`} />
-      <div className={`${styles.orb} ${styles.orb2}`} />
+
+      <canvas
+        className={styles.starsCanvas}
+        ref={canvasRef}
+      />
+
+      <div
+        className={`${styles.orb} ${styles.orb1}`}
+      />
+
+      <div
+        className={`${styles.orb} ${styles.orb2}`}
+      />
     </div>
   )
 }
