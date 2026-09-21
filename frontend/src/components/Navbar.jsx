@@ -134,7 +134,7 @@ export default function Navbar() {
             aria-label="NOVEx Engineering Tech — Home"
           >
             <img
-              src="/assets/novex-logotype.png"
+              src="/assets/novexarc_logos/logotype_novexarc.png"
               alt="NOVEx Engineering Tech"
               className={styles.logoImage}
             />

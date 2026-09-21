@@ -8,12 +8,12 @@ export default function InDevelopment({ pageName = 'This page' }) {
           <span className={styles.dot} style={{ background: '#ff5f56' }} />
           <span className={styles.dot} style={{ background: '#ffbd2e' }} />
           <span className={styles.dot} style={{ background: '#2f94d8' }} />
-          <span className={styles.barTitle}>novex — {pageName.toLowerCase()}</span>
+          <span className={styles.barTitle}>novexarc — {pageName.toLowerCase()}</span>
         </div>
 
         <div className={styles.body}>
           <div className={styles.line}>
-            <span className={styles.ps1}>novex@corp:~$</span>
+            <span className={styles.ps1}>novexarc@corp:~$</span>
             <span className={styles.cmd}> cd pages/{pageName.toLowerCase()}</span>
           </div>
           <div className={styles.out}>
@@ -23,7 +23,7 @@ export default function InDevelopment({ pageName = 'This page' }) {
           <div className={styles.gap} />
 
           <div className={styles.line}>
-            <span className={styles.ps1}>novex@corp:~$</span>
+            <span className={styles.ps1}>novexarc@corp:~$</span>
             <span className={styles.cmd}> git log --oneline -1</span>
           </div>
           <div className={styles.out}>
@@ -45,7 +45,7 @@ export default function InDevelopment({ pageName = 'This page' }) {
           <div className={styles.gap} />
 
           <div className={styles.line}>
-            <span className={styles.ps1}>novex@corp:~$</span>
+            <span className={styles.ps1}>novexarc@corp:~$</span>
             <span className={styles.cursor}>&nbsp;</span>
           </div>
         </div>

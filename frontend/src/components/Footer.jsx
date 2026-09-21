@@ -10,13 +10,13 @@ export default function Footer() {
           {/* NOVEx Horizontal Logo */}
           <div className={styles.brand}>
             <img
-              src="/assets/novex-horizontal-logomark&logotype.png"
+              src="/assets/novexarc_logos/horizontal_novexarc.png"
               alt="NOVEx Engineering Tech"
               className={styles.logo}
             />
 
             <div className={styles.copy}>
-              © 2026 NOVEx Engineering Tech. All rights reserved.
+              © 2026 NOVEXARC Systems. All rights reserved.
               <span className={styles.comment}>
                 // unauthorized distribution prohibited
               </span>

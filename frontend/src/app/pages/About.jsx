@@ -12,7 +12,7 @@ export default function About() {
 
         <div className={`${styles.grid} fade-up`} ref={ref}>
           <div className={styles.text}>
-            <p>NOVEx started as a group of <strong>organized developers</strong> with a shared passion for technology, innovation, and problem-solving.</p>
+            <p>NOVEXARC started as a group of <strong>organized developers</strong> with a shared passion for technology, innovation, and problem-solving.</p>
             <p>What began as collaborative freelancing evolved into a <strong>structured software solutions company</strong> with dedicated leadership and development workflows.</p>
             <p>We believe software should not only function properly but also provide <strong>meaningful experiences, performance, and long-term scalability</strong>.</p>
 

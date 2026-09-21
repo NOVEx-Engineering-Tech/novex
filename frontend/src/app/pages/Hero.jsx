@@ -117,7 +117,7 @@ export default function Hero() {
           {/* LEFT — headline + sub */}
           <div className={styles.left}>
             <div className={styles.prompt}>
-              <span className={styles.promptSym}>novex@corp</span>
+              <span className={styles.promptSym}>novexarc@corp</span>
               :~$ <span>{typed}</span>
               <span className={styles.cursor}>&nbsp;</span>
             </div>

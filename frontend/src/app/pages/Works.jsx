@@ -6,7 +6,7 @@ import styles from './Works.module.css'
 
 function generateCode(width, height) {
   const library = [
-    '// novex — project scanner',
+    '// novexarc — project scanner',
     'const SCAN_WIDTH = 8;',
     'const MAX_PARTICLES = 2500;',
     'function clamp(n,a,b){return Math.max(a,Math.min(b,n));}',

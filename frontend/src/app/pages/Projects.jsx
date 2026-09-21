@@ -61,11 +61,7 @@ export default function Projects() {
 
         <div className={styles.headerRow}>
           <SectionHeader
-            label={
-              query
-                ? `${results.length} result${results.length === 1 ? '' : 's'} for "${query}"`
-                : `all work — ${items.length} project${items.length === 1 ? '' : 's'}`
-            }
+            
             title="Our"
             accent="projects"
           />

@@ -240,7 +240,7 @@ export default function CaseStudy() {
       <div className={styles.container}>
         <div className={styles.terminalStrip}>
           <span className={styles.terminalPrompt}>
-            novex@corp:~$
+            novexarc@corp:~$
           </span>
 
           <span>
